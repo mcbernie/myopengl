@@ -31,6 +31,11 @@ type Slide struct {
 	IsVideo              bool
 }
 
+//GetUid Retruns own uid
+func (s *Slide) GetUid() string {
+	return s.uid
+}
+
 //NewSlideFromImageFile Create slide from image
 func NewSlideFromImageFile(path string, uid string) (*Slide, error) {
 

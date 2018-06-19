@@ -80,9 +80,15 @@ func programLoop(window *glfw.Window) error {
 	}()
 
 	go func() {
-		time.Sleep(20 * time.Second)
+		time.Sleep(16 * time.Second)
 		log.Println("now begin loading 2. a image...")
 		display.LoadRemoteImage("http://wacogmbh.de:3999/index.php?m=fb&o=image&name=med_1275283013_60102000.jpg", "asduhfudh")
+	}()
+
+	go func() {
+		time.Sleep(21 * time.Second)
+		log.Println("Now testing the removeing of an texture")
+		display.RemoveSlide("lkih76555")
 	}()
 
 	/*video, _ := display.CreateVideoSlide("TestVideo")

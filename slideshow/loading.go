@@ -5,7 +5,9 @@ import (
 	"log"
 	"strings"
 
+	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/glThread"
 )
 
 type loader struct {
@@ -80,6 +82,23 @@ func (s *Slideshow) LoadTransitions(path string) {
 		if !f.IsDir() && strings.Contains(f.Name(), ".glsl") {
 			sa, _ := loadFromFile(path + "/" + f.Name())
 			s.transitions = append(s.transitions, gfx.MakeTransition(gfx.Stretch, sa, f.Name()))
+		}
+	}
+}
+
+//RemoveSlide removes a slide from slideshow
+func (s *Slideshow) RemoveSlide(uid string) {
+	for i, slide := range s.slides {
+		if slide.GetUid() == uid {
+
+			texHandle := slide.Tex.GetHandle()
+			glThread.Add(func() {
+				gl.DeleteTextures(1, &texHandle)
+			})
+
+			newslides := append(s.slides[:i], s.slides[i+1:]...)
+
+			s.slides = newslides
 		}
 	}
 }

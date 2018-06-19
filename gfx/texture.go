@@ -107,3 +107,8 @@ func (tex *Texture) SetUniform(uniformLoc int32) error {
 	gl.Uniform1i(uniformLoc, int32(tex.texUnit-gl.TEXTURE0))
 	return nil
 }
+
+//GetHandle returns own texture handle
+func (tex *Texture) GetHandle() uint32 {
+	return tex.handle
+}

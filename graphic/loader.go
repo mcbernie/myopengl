@@ -35,3 +35,8 @@ func (d *Display) LoadImagesFromPath(path string) {
 		}
 	}
 }
+
+//RemoveSlide outside in helper to remove a slide
+func (d *Display) RemoveSlide(uid string) {
+	d.slideshow.RemoveSlide(uid)
+}
