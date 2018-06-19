@@ -1,7 +1,5 @@
 package glThread
 
-import "log"
-
 //Channel For scoping to main Thread
 type Channel struct {
 	scope chan func()
@@ -25,7 +23,7 @@ func Add(fn func()) {
 func Runs() {
 	select {
 	case fn := <-c.scope:
-		log.Println("gets a function and run it...")
+		//log.Println("gets a function and run it...")
 		fn()
 	default:
 	}

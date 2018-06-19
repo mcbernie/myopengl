@@ -8,6 +8,7 @@ import (
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glThread"
 	"github.com/mcbernie/myopengl/graphic"
 )
@@ -91,7 +92,7 @@ func programLoop(window *glfw.Window) error {
 		display.RemoveSlide("lkih76555")
 	}()
 
-	/*video, _ := display.CreateVideoSlide("TestVideo")
+	video, _ := display.CreateVideoSlide("TestVideo")
 	go func() {
 
 		v := gfx.InitVideo()
@@ -110,7 +111,7 @@ func programLoop(window *glfw.Window) error {
 			}
 		}
 
-	}()*/
+	}()
 
 	defer display.Delete()
 

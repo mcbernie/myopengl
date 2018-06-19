@@ -6,7 +6,6 @@ import (
 	"image/draw"
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
-	"log"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR: github.com/go-gl/gl/v2.1/gl
 	"github.com/go-gl/gl/v2.1/gl"
@@ -29,10 +28,7 @@ var errTextureNotBound = errors.New("texture not found")
 func NewTexture(wrapR, wrapS int32) *Texture {
 
 	var handle uint32
-	log.Println("generate texture...")
 	gl.GenTextures(1, &handle)
-
-	log.Println("texture generated...")
 
 	target := uint32(gl.TEXTURE_2D)
 
