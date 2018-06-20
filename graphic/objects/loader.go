@@ -9,15 +9,19 @@ import ( //"math"
 	//"github.com/mcbernie/myopengl/gfx"
 )
 
+//Loader holds all vaos and vbos handler for cleanup and access
+// Helper Generating VAO by calling of LoadToVAO
 type Loader struct {
 	vaos []uint32
 	vbos []uint32
 }
 
+//MakeLoader Creat
 func MakeLoader() *Loader {
 	return &Loader{}
 }
 
+//LoadToVAO returns an RawModel and creates an VAO and save handler in Loader struct
 func (l *Loader) LoadToVAO(positions []float32) *RawModel {
 	vao := l.createVAO()
 	l.storeDataInAttributeList(0, positions)
@@ -55,6 +59,7 @@ func (l *Loader) unbindVAO() {
 	glHelper.BindVertexArray(0)
 }
 
+//CleanUP delete all VAOS and Buffers from opengl memory
 func (l *Loader) CleanUP() {
 	for _, vao := range l.vaos {
 		glHelper.DeleteVertexArrary(1, &vao)

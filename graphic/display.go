@@ -40,11 +40,11 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 		-0.5, 0.5, 0,
 	}
 
-	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
-	d.slideshow.UpdateWindowSize(float32(windowWidth), float32(windowHeight))
-
 	d.rawModel = d.loader.LoadToVAO(vertices)
 
+	// SlideShowSpecific
+	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
+	d.slideshow.UpdateWindowSize(float32(windowWidth), float32(windowHeight))
 	d.slideshow.LoadTransitions("./assets/transitions")
 
 	//initFont()
