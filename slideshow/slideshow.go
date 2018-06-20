@@ -29,8 +29,8 @@ type Slideshow struct {
 	delay    float64
 	duration float64
 
-	windowWidth  float32
-	windowHeight float32
+	/*windowWidth  float32
+	windowHeight float32*/
 }
 
 //MakeSlideshow Generates the slideshow
@@ -69,10 +69,10 @@ func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 }
 
 //UpdateWindowSize get Called if the window would resized
-func (s *Slideshow) UpdateWindowSize(width, height float32) {
+/*func (s *Slideshow) UpdateWindowSize(width, height float32) {
 	s.windowWidth = width
 	s.windowHeight = height
-}
+}*/
 
 func (s *Slideshow) renderTransition(time float64) {
 	index := s.index(time)
@@ -96,7 +96,7 @@ func (s *Slideshow) renderTransition(time float64) {
 	}
 
 	transition := s.transitions[s.currentTransition]
-	transition.Draw(s.progress(time), from.Tex, to.Tex, s.windowWidth, s.windowHeight)
+	transition.Draw(s.progress(time), from.Tex, to.Tex)
 
 }
 

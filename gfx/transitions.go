@@ -128,10 +128,10 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string) *Transition
 }
 
 //Draw draws a transition
-func (transition *Transition) Draw(progress float32, from *Texture, to *Texture, width float32, height float32 /*, params map[string]interface{}*/) {
+func (transition *Transition) Draw(progress float32, from *Texture, to *Texture /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
 	shader := transition.Shader
 	shader.Use()
-	glHelper.Uniform1f(shader.GetUniform("ratio"), width/height)
+	//glHelper.Uniform1f(shader.GetUniform("ratio"), width/height)
 	glHelper.Uniform1f(shader.GetUniform("progress"), progress)
 
 	from.Bind(0)

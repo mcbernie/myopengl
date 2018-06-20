@@ -44,7 +44,6 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 
 	// SlideShowSpecific
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
-	d.slideshow.UpdateWindowSize(float32(windowWidth), float32(windowHeight))
 	d.slideshow.LoadTransitions("./assets/transitions")
 
 	//initFont()
@@ -55,7 +54,6 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 func (d *Display) SetWindowSize(width, height int) {
 	d.windowWidth = float32(width)
 	d.windowHeight = float32(height)
-	d.slideshow.UpdateWindowSize(float32(width), float32(height))
 }
 
 //Render make all updates for rendering
