@@ -36,16 +36,19 @@ type Slideshow struct {
 //MakeSlideshow Generates the slideshow
 func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader) *Slideshow {
 
-	box := []float32{
-		-1.0, -1.0, 0,
-		1.0, -1.0, 0,
-		-1.0, 1.0, 0,
-		-1.0, 1.0, 0,
-		1.0, -1.0, 0,
-		1.0, 1.0, 0,
+	verts := []float32{
+		-1.0, 1.0, 0, //V0
+		-1.0, -1.0, 0, //V1
+		1.0, -1.0, 0, //V2
+		1.0, 1.0, 0, //V3
 	}
 
-	model := loader.LoadToVAO(box)
+	inds := []int32{
+		0, 1, 3,
+		3, 1, 2,
+	}
+
+	model := loader.LoadToVAO(verts, inds)
 
 	s := &Slideshow{
 		model: model,

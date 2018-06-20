@@ -7,6 +7,7 @@ import (
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 
+	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
@@ -50,8 +51,8 @@ func main() {
 		panic(err)
 	}
 
-	//log.Println("OpenGL Version:", gl.GoStr(gl.GetString(gl.VERSION)))
-	//log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
+	log.Println("OpenGL Version:", gl.GoStr(gl.GetString(gl.VERSION)))
+	log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 
 	window.SetKeyCallback(keyCallback)
 
@@ -66,7 +67,7 @@ func programLoop(window *glfw.Window) error {
 	width, height := window.GetSize()
 
 	display := graphic.InitDisplay(width, height, delay, duration)
-	display.LoadImagesFromPath("./images")
+	display.LoadImagesFromPath("./assets/images")
 
 	window.SetSizeCallback(func(w *glfw.Window, width int, height int) {
 		display.SetWindowSize(width, height)

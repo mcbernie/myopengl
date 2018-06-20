@@ -1,12 +1,9 @@
 package objects
 
-import ( //"math"
-	//"math/rand"
-	//"log"
+import (
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/mcbernie/myopengl/glHelper"
-	//"github.com/mcbernie/myopengl/gfx"
 )
 
 //Loader holds all vaos and vbos handler for cleanup and access
@@ -22,12 +19,13 @@ func MakeLoader() *Loader {
 }
 
 //LoadToVAO returns an RawModel and creates an VAO and save handler in Loader struct
-func (l *Loader) LoadToVAO(positions []float32) *RawModel {
+func (l *Loader) LoadToVAO(positions []float32, indicies []int32) *RawModel {
 	vao := l.createVAO()
+	l.bindIndiciesBuffer(indicies)
 	l.storeDataInAttributeList(0, positions)
 	l.unbindVAO()
 
-	return CreateRawModel(vao, int32(len(positions)/3))
+	return CreateRawModel(vao, len(indicies))
 }
 
 func (l *Loader) createVAO() uint32 {
@@ -58,6 +56,16 @@ func (l *Loader) storeDataInAttributeList(attributeNumber uint32, data []float32
 func (l *Loader) unbindVAO() {
 	glHelper.BindVertexArray(0)
 }
+
+func (l *Loader) bindIndiciesBuffer(indicies []int32) {
+	var vbo uint32
+	gl.GenBuffers(1, &vbo)
+	l.vbos = append(l.vbos, vbo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indicies)*4, gl.Ptr(indicies), gl.STATIC_DRAW)
+}
+
+//func (l *Loader) storeDataInIntBuffer( indicies []int32)
 
 //CleanUP delete all VAOS and Buffers from opengl memory
 func (l *Loader) CleanUP() {

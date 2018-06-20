@@ -29,18 +29,26 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
 
+	/**
+		My Testing Area
+	**/
 	vertices := []float32{
-		//Left bottom triangle
-		-0.5, 0.5, 0,
-		-0.5, -0.5, 0,
-		0.5, -0.5, 0,
-		//Right top triangle
-		0.5, -0.5, 0,
-		0.5, 0.5, 0,
-		-0.5, 0.5, 0,
+		-0.5, 0.5, 0, //V0
+		-0.5, -0.5, 0, //V1
+		0.5, -0.5, 0, //V2
+		0.5, 0.5, 0, //V3
 	}
 
-	d.rawModel = d.loader.LoadToVAO(vertices)
+	indicies := []int32{
+		0, 1, 3, //Top Left triangle (V0, V1, V3)
+		3, 1, 2, //Bottom Right triangle (V3, V1, V2)
+	}
+
+	d.rawModel = d.loader.LoadToVAO(vertices, indicies)
+
+	/**
+		End of My Testing Area
+	**/
 
 	// SlideShowSpecific
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
@@ -66,6 +74,6 @@ func (d *Display) Render(time float64) {
 
 //Delete unload all data from gpu
 func (d *Display) Delete() {
-	//d.loader.CleanUP()
-	//d.slideshow.Delete()
+	d.loader.CleanUP()
+	d.slideshow.Delete()
 }

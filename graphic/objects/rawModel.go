@@ -5,10 +5,10 @@ type RawModel struct {
 	vertexCount int32
 }
 
-func CreateRawModel(vao uint32, vertexCount int32) *RawModel {
+func CreateRawModel(vao uint32, vertexCount int) *RawModel {
 	return &RawModel{
 		vao:         vao,
-		vertexCount: vertexCount,
+		vertexCount: int32(vertexCount),
 	}
 }
 

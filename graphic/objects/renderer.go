@@ -1,16 +1,14 @@
 package objects
 
 import (
+	"github.com/mcbernie/myopengl/glHelper"
 	//"math"
 	//"math/rand"
-	//"log"
-
 	"log"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/mcbernie/myopengl/gfx"
-	//"github.com/mcbernie/myopengl/gfx"
 )
 
 type Renderer struct {
@@ -37,16 +35,13 @@ func (r *Renderer) UseDefaultShader() {
 }
 
 func (r *Renderer) Render(model *RawModel) {
-
-	//gl.BindVertexArray(model.GetVao())
-	gl.BindVertexArrayAPPLE(model.GetVao())
+	glHelper.BindVertexArray(model.GetVao())
 
 	gl.EnableVertexAttribArray(0)
-	gl.DrawArrays(gl.TRIANGLES, 0, model.GetVertexCount())
+	//gl.DrawArrays(gl.TRIANGLES, 0, model.GetVertexCount())
+	gl.DrawElements(gl.TRIANGLES, model.GetVertexCount(), gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.DisableVertexAttribArray(0)
 
-	//gl.BindVertexArray(0)
-	gl.BindVertexArrayAPPLE(model.GetVao())
-
+	glHelper.BindVertexArray(0)
 	gl.UseProgram(0)
 }
