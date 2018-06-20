@@ -4,8 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/mcbernie/myopengl/glHelper"
 )
 
 const fragementShaderTemplate = `
@@ -99,11 +98,11 @@ func makeFrag(transitionGlsl string, resizeMode ResizeMode) string {
 func MakeTransition(resizeMode ResizeMode, glsl string, name string) *Transition {
 
 	// create a shader and put it in the thing here
-	vertShader, err := NewShader(vert, gl.VERTEX_SHADER)
+	vertShader, err := NewShader(vert, glHelper.GlVertexShader)
 	if err != nil {
 		panic("VertexShader error:" + err.Error())
 	}
-	fragShader, err := NewShader(makeFrag(glsl, resizeMode), gl.FRAGMENT_SHADER)
+	fragShader, err := NewShader(makeFrag(glsl, resizeMode), glHelper.GlFragmentShader)
 	if err != nil {
 		panic("FragmentShader error:" + err.Error())
 	}
@@ -132,18 +131,16 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string) *Transition
 func (transition *Transition) Draw(progress float32, from *Texture, to *Texture, width float32, height float32 /*, params map[string]interface{}*/) {
 	shader := transition.Shader
 	shader.Use()
-
-	gl.Uniform1f(shader.GetUniform("ratio"), width/height)
-	gl.Uniform1f(shader.GetUniform("progress"), progress)
+	glHelper.Uniform1f(shader.GetUniform("ratio"), width/height)
+	glHelper.Uniform1f(shader.GetUniform("progress"), progress)
 
 	from.Bind(0)
 	to.Bind(1)
-	gl.Uniform1i(shader.GetUniform("from"), 0)
-	gl.Uniform1i(shader.GetUniform("to"), 1)
-	gl.Uniform1i(shader.GetUniform("_fromR"), from.width/from.height)
-	gl.Uniform1i(shader.GetUniform("_toR"), to.width/to.height)
+	glHelper.Uniform1i(shader.GetUniform("from"), 0)
+	glHelper.Uniform1i(shader.GetUniform("to"), 1)
+	glHelper.Uniform1i(shader.GetUniform("_fromR"), from.width/from.height)
+	glHelper.Uniform1i(shader.GetUniform("_toR"), to.width/to.height)
 	// other...
-	gl.DrawArrays(gl.TRIANGLES, 0, 6)
 	//shader.Delete()
 }
 

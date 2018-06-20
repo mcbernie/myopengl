@@ -7,8 +7,7 @@ import (
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
 
-	//"github.com/go-gl/gl/v4.1-core/gl" // OR: github.com/go-gl/gl/v2.1/gl
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/mcbernie/myopengl/glHelper"
 )
 
 //Texture struct for a Texture
@@ -28,9 +27,9 @@ var errTextureNotBound = errors.New("texture not found")
 func NewTexture(wrapR, wrapS int32) *Texture {
 
 	var handle uint32
-	gl.GenTextures(1, &handle)
+	glHelper.GenTextures(1, &handle)
 
-	target := uint32(gl.TEXTURE_2D)
+	target := uint32(glHelper.GlTexture2D)
 
 	texture := Texture{
 		handle: handle,
@@ -52,46 +51,46 @@ func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 		return errUnsupportedStride
 	}
 
-	internalFmt := int32(gl.SRGB_ALPHA)
-	format := uint32(gl.RGBA)
+	internalFmt := int32(glHelper.GlSrgbAlpha)
+	format := uint32(glHelper.GlRgbA)
 	width := int32(rgba.Rect.Size().X)
 	height := int32(rgba.Rect.Size().Y)
-	pixType := uint32(gl.UNSIGNED_BYTE)
-	dataPtr := gl.Ptr(rgba.Pix)
+	pixType := uint32(glHelper.GlUnsignedByte)
+	dataPtr := glHelper.Ptr(rgba.Pix)
 
 	tex.width = width
 	tex.height = height
 
-	tex.Bind(gl.TEXTURE0)
+	tex.Bind(glHelper.GlTexture0)
 	defer tex.UnBind()
 
-	gl.TexParameteri(tex.target, gl.TEXTURE_WRAP_R, wrapR)
-	gl.TexParameteri(tex.target, gl.TEXTURE_WRAP_S, wrapS)
-	gl.TexParameteri(tex.target, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(tex.target, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureWrapR, wrapR)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureWrapS, wrapS)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinear)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureMagFilter, glHelper.GlLinear)
 
-	gl.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
+	glHelper.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
 
-	gl.GenerateMipmap(tex.handle)
+	glHelper.GenerateMipmap(tex.handle)
 	return nil
 }
 
 //Bind binds a Texture to OpenGl
 func (tex *Texture) Bind(unit uint32) {
-	gl.ActiveTexture(gl.TEXTURE0 + unit)
-	gl.BindTexture(tex.target, tex.handle)
-	tex.unit = gl.TEXTURE0 + unit
+	glHelper.ActiveTexture(glHelper.GlTexture0 + unit)
+	glHelper.BindTexture(tex.target, tex.handle)
+	tex.unit = glHelper.GlTexture0 + unit
 }
 
 //UnBind remove a Texture from OpenGL
 func (tex *Texture) UnBind() {
 	tex.unit = 0
-	gl.BindTexture(tex.target, 0)
+	glHelper.BindTexture(tex.target, 0)
 }
 
 //Delete remove a texture from Memory
 func (tex *Texture) Delete() {
-	gl.DeleteTextures(1, &tex.target)
+	glHelper.DeleteTextures(1, &tex.target)
 }
 
 //SetUniform sets the uniform Variable in OpenGL
@@ -100,7 +99,7 @@ func (tex *Texture) SetUniform(uniformLoc int32) error {
 		return errTextureNotBound
 	}
 
-	gl.Uniform1i(uniformLoc, int32(tex.texUnit-gl.TEXTURE0))
+	glHelper.Uniform1i(uniformLoc, int32(tex.texUnit-glHelper.GlTexture0))
 	return nil
 }
 

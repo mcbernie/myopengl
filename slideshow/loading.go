@@ -5,9 +5,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glThread"
+	"github.com/mcbernie/myopengl/glHelper"
 )
 
 type loader struct {
@@ -92,8 +91,8 @@ func (s *Slideshow) RemoveSlide(uid string) {
 		if slide.GetUid() == uid {
 
 			texHandle := slide.Tex.GetHandle()
-			glThread.Add(func() {
-				gl.DeleteTextures(1, &texHandle)
+			glHelper.AddFunction(func() {
+				glHelper.DeleteTextures(1, &texHandle)
 			})
 
 			newslides := append(s.slides[:i], s.slides[i+1:]...)

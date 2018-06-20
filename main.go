@@ -6,10 +6,10 @@ import (
 	"time"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
+
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glThread"
+	"github.com/mcbernie/myopengl/glHelper"
 	"github.com/mcbernie/myopengl/graphic"
 )
 
@@ -27,7 +27,7 @@ func init() {
 func main() {
 
 	//Setup Scoping
-	glThread.InitScoping()
+	glHelper.InitScoping()
 
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to inifitialize glfw:", err)
@@ -46,12 +46,12 @@ func main() {
 	}
 	window.MakeContextCurrent()
 
-	if err := gl.Init(); err != nil {
+	if err := glHelper.Init(); err != nil {
 		panic(err)
 	}
 
-	log.Println("OpenGL Version:", gl.GoStr(gl.GetString(gl.VERSION)))
-	log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
+	//log.Println("OpenGL Version:", gl.GoStr(gl.GetString(gl.VERSION)))
+	//log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 
 	window.SetKeyCallback(keyCallback)
 
@@ -115,17 +115,21 @@ func programLoop(window *glfw.Window) error {
 
 	defer display.Delete()
 
+	//gl.Enable(gl.DEPTH_TEST)
+
 	for !window.ShouldClose() {
 		//scoping...
-		glThread.Runs()
+		glHelper.RunFunctions()
 
 		// poll events and call their registered callbacks
 		glfw.PollEvents()
 
 		// background color
-		//gl.ClearColor(0.2, 0.5, 0.5, 1.0)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
+		glHelper.ClearColor(0.2, 0.5, 0.5, 1.0)
+		glHelper.Clear(glHelper.GlColorBufferBit)
+
 		display.Render(glfw.GetTime())
+
 		window.SwapBuffers()
 	}
 

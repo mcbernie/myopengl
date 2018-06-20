@@ -8,9 +8,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/mcbernie/myopengl/glThread"
+	"github.com/mcbernie/myopengl/glHelper"
 
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
@@ -50,7 +48,7 @@ func NewSlideFromImageFile(path string, uid string) (*Slide, error) {
 func NewSlideFromRemoteImage(url string, uid string) (*Slide, error) {
 
 	ret := make(chan *Slide)
-	glThread.Add(func() {
+	glHelper.AddFunction(func() {
 		ret <- createSlide(uid, false)
 	})
 	s := <-ret
@@ -67,7 +65,7 @@ func NewSlideForVideo(uid string) *Slide {
 
 func createSlide(uid string, isVideo bool) *Slide {
 
-	tex := NewTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
+	tex := NewTexture(glHelper.GlClampToEdge, glHelper.GlClampToEdge)
 	return &Slide{
 		uid:      uid,
 		Tex:      tex,
@@ -138,10 +136,10 @@ func (s *Slide) Update() {
 	defer s.imageMux.Unlock()
 
 	if s.IsVideo {
-		s.Tex.SetImage(s.img, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
+		s.Tex.SetImage(s.img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
 	} else {
 		if s.imageReadyForReplace {
-			s.Tex.SetImage(s.img, gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE)
+			s.Tex.SetImage(s.img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
 			s.imageReadyForReplace = false
 		}
 	}

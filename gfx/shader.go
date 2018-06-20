@@ -1,12 +1,9 @@
 package gfx
 
 import (
-	"fmt"
 	"io/ioutil"
-	"strings"
 
-	//"github.com/go-gl/gl/v4.1-core/gl" // OR: github.com/go-gl/gl/v2.1/gl
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/mcbernie/myopengl/glHelper"
 )
 
 //Shader is the structure for Shader
@@ -24,7 +21,7 @@ type Program struct {
 
 //Delete remove a shader from gl.Program, shader
 func (shader *Shader) Delete() {
-	gl.DeleteShader(shader.handle)
+	glHelper.DeleteShader(shader.handle)
 }
 
 //Delete remove a Program from OpenGL
@@ -32,63 +29,69 @@ func (prog *Program) Delete() {
 	for _, shader := range prog.shaders {
 		shader.Delete()
 	}
-	gl.DeleteProgram(prog.handle)
+	glHelper.DeleteProgram(prog.handle)
 }
 
 //Attach add multiple Shaders to a Program
 func (prog *Program) Attach(shaders ...*Shader) {
 	for _, shader := range shaders {
-		gl.AttachShader(prog.handle, shader.handle)
+		glHelper.AttachShader(prog.handle, shader.handle)
 		prog.shaders = append(prog.shaders, shader)
 	}
 }
 
 //Use Enable the Program in OpenGL
 func (prog *Program) Use() {
-	gl.UseProgram(prog.handle)
+	glHelper.UseProgram(prog.handle)
 }
 
 //Link Linking the Program with OpenGL
 func (prog *Program) Link() error {
-	gl.LinkProgram(prog.handle)
-	err := getGlError(prog.handle, gl.LINK_STATUS, gl.GetProgramiv, gl.GetProgramInfoLog,
+	glHelper.LinkProgram(prog.handle)
+	err := glHelper.GetGlError(prog.handle, glHelper.GlLinkStatus, glHelper.GetProgramiv, glHelper.GetProgramInfoLog,
 		"PROGRAM::LINKING_FAILURE")
 	return err
 }
 
 //AddAttribute add AttributeLocation to an map for easier and faster access
 func (prog *Program) AddAttribute(name string) {
-	prog.attributeLocations[name] = uint32(gl.GetAttribLocation(prog.handle, gl.Str(name+"\x00")))
+	prog.attributeLocations[name] = uint32(glHelper.GetAttribLocation(prog.handle, name))
 }
 
 //AddUniform add Uniform Location to an map for easier and faster access
 func (prog *Program) AddUniform(name string) {
-	prog.uniformLocations[name] = gl.GetUniformLocation(prog.handle, gl.Str(name+"\x00"))
+	prog.uniformLocations[name] = glHelper.GetUniformLocation(prog.handle, name)
 }
 
 //GetUniform get the Uniform Location from Map object
 func (prog *Program) GetUniform(name string) int32 {
 	//log.Println("getUniformLocations:", prog.uniformLocations[name], name, gl.GetUniformLocation(prog.handle, gl.Str(name+"\x00")))
 	//return prog.uniformLocations[name] //
-	return gl.GetUniformLocation(prog.handle, gl.Str(name+"\x00"))
+	return glHelper.GetUniformLocation(prog.handle, name)
 }
 
 //GetAttribute get the Attribute Location from Map object
 func (prog *Program) GetAttribute(name string) int32 {
 	//return prog.attributeLocations[name]
-	return gl.GetAttribLocation(prog.handle, gl.Str(name+"\x00"))
+	return glHelper.GetAttribLocation(prog.handle, name)
+}
+
+//BindAttribute bind vertex variable to vertex shader
+func (prog *Program) BindAttribute(index uint32, name string) {
+	glHelper.BindAttribLocation(prog.handle, index, name)
+
 }
 
 //NewProgram initialize a Program with shaders
 func NewProgram(shaders ...*Shader) (*Program, error) {
 	prog := &Program{
-		handle:             gl.CreateProgram(),
+		handle:             glHelper.CreateProgram(),
 		uniformLocations:   make(map[string]int32),
 		attributeLocations: make(map[string]uint32),
 	}
 
 	prog.Attach(shaders...)
-
+	prog.BindAttribute(0, "position")
 	if err := prog.Link(); err != nil {
 		return nil, err
 	}
@@ -104,12 +107,12 @@ func NewProgram(shaders ...*Shader) (*Program, error) {
 //NewShader Creates a new Shader with in sType specified Shader Type from Source String
 func NewShader(src string, sType uint32) (*Shader, error) {
 
-	handle := gl.CreateShader(sType)
-	glSrc, freeFn := gl.Strs(src + "\x00")
+	handle := glHelper.CreateShader(sType)
+	glSrc, freeFn := glHelper.Strs(src + "\x00")
 	defer freeFn()
-	gl.ShaderSource(handle, 1, glSrc, nil)
-	gl.CompileShader(handle)
-	err := getGlError(handle, gl.COMPILE_STATUS, gl.GetShaderiv, gl.GetShaderInfoLog,
+	glHelper.ShaderSource(handle, 1, glSrc, nil)
+	glHelper.CompileShader(handle)
+	err := glHelper.GetGlError(handle, glHelper.GlCompileStatus, glHelper.GetShaderiv, glHelper.GetShaderInfoLog,
 		"SHADER::COMPILE_FAILURE::")
 	if err != nil {
 		return nil, err
@@ -123,37 +126,15 @@ func NewShaderFromFile(file string, sType uint32) (*Shader, error) {
 	if err != nil {
 		return nil, err
 	}
-	handle := gl.CreateShader(sType)
-	glSrc, freeFn := gl.Strs(string(src) + "\x00")
+	handle := glHelper.CreateShader(sType)
+	glSrc, freeFn := glHelper.Strs(string(src) + "\x00")
 	defer freeFn()
-	gl.ShaderSource(handle, 1, glSrc, nil)
-	gl.CompileShader(handle)
-	err = getGlError(handle, gl.COMPILE_STATUS, gl.GetShaderiv, gl.GetShaderInfoLog,
+	glHelper.ShaderSource(handle, 1, glSrc, nil)
+	glHelper.CompileShader(handle)
+	err = glHelper.GetGlError(handle, glHelper.GlCompileStatus, glHelper.GetShaderiv, glHelper.GetShaderInfoLog,
 		"SHADER::COMPILE_FAILURE::"+file)
 	if err != nil {
 		return nil, err
 	}
 	return &Shader{handle: handle}, nil
-}
-
-type getObjIv func(uint32, uint32, *int32)
-type getObjInfoLog func(uint32, int32, *int32, *uint8)
-
-func getGlError(glHandle uint32, checkTrueParam uint32, getObjIvFn getObjIv,
-	getObjInfoLogFn getObjInfoLog, failMsg string) error {
-
-	var success int32
-	getObjIvFn(glHandle, checkTrueParam, &success)
-
-	if success == gl.FALSE {
-		var logLength int32
-		getObjIvFn(glHandle, gl.INFO_LOG_LENGTH, &logLength)
-
-		log := gl.Str(strings.Repeat("\x00", int(logLength)))
-		getObjInfoLogFn(glHandle, logLength, nil, log)
-
-		return fmt.Errorf("%s: %s", failMsg, gl.GoStr(log))
-	}
-
-	return nil
 }

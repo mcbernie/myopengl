@@ -3,17 +3,14 @@ package slideshow
 import (
 	"math"
 	"math/rand"
-	//"log"
 
-	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 //Slideshow the Struct for the slideshow
 type Slideshow struct {
-	vbo uint32
-	vao uint32
+	model *objects.RawModel
 
 	loaders []*loader
 
@@ -37,35 +34,21 @@ type Slideshow struct {
 }
 
 //MakeSlideshow Generates the slideshow
-func MakeSlideshow(defaultDelay, defaultDuration float64) *Slideshow {
+func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader) *Slideshow {
 
 	box := []float32{
-		-1.0, -1.0,
-		1.0, -1.0,
-		-1.0, 1.0,
-		-1.0, 1.0,
-		1.0, -1.0,
-		1.0, 1.0,
+		-1.0, -1.0, 0,
+		1.0, -1.0, 0,
+		-1.0, 1.0, 0,
+		-1.0, 1.0, 0,
+		1.0, -1.0, 0,
+		1.0, 1.0, 0,
 	}
 
-	var VAO uint32
-	gl.GenVertexArrays(1, &VAO)
-	gl.BindVertexArray(VAO)
-
-	var VBO uint32
-	gl.GenBuffers(1, &VBO)
-	gl.BindBuffer(gl.ARRAY_BUFFER, VBO)
-	gl.BufferData(gl.ARRAY_BUFFER, len(box)*4, gl.Ptr(box), gl.STATIC_DRAW)
-	gl.EnableVertexAttribArray(0)
-	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
-	gl.BindBuffer(VBO, 0)
-
-	gl.BindVertexArray(0)
+	model := loader.LoadToVAO(box)
 
 	s := &Slideshow{
-		vao: VAO,
-		vbo: VBO,
-		//box: box,
+		model: model,
 
 		currentIndex:      0,
 		currentTransition: 0,
@@ -80,12 +63,9 @@ func MakeSlideshow(defaultDelay, defaultDuration float64) *Slideshow {
 }
 
 //Render Render the transitions
-func (s *Slideshow) Render(time float64) {
-	gl.BindVertexArray(s.vao)
-	gl.EnableVertexAttribArray(0)
+func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 	s.renderTransition(time)
-	gl.DisableVertexAttribArray(0)
-	gl.BindVertexArray(0)
+	renderer.Render(s.model)
 }
 
 //UpdateWindowSize get Called if the window would resized
@@ -146,9 +126,6 @@ func (s *Slideshow) index(time float64) int {
 
 //Delete remove all transitions and all slides from memory
 func (s *Slideshow) Delete() {
-	gl.BindVertexArray(0)
-	gl.DeleteBuffers(1, &s.vbo)
-	gl.DeleteVertexArrays(1, &s.vao)
 
 	for _, transition := range s.transitions {
 		transition.Delete()
