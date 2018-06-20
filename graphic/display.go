@@ -1,6 +1,7 @@
 package graphic
 
 import (
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/graphic/objects"
 	"github.com/mcbernie/myopengl/slideshow"
@@ -17,6 +18,7 @@ type Display struct {
 	renderer *objects.Renderer
 	loader   *objects.Loader
 	rawModel *objects.RawModel
+	entity   *objects.Entity
 }
 
 //InitDisplay initialize a Display object
@@ -44,7 +46,9 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 		3, 1, 2, //Bottom Right triangle (V3, V1, V2)
 	}
 
-	d.rawModel = d.loader.LoadToVAO(vertices, indicies)
+	rawModel := d.loader.LoadToVAO(vertices, indicies)
+
+	d.entity = objects.MakeEntity(rawModel, mgl32.Vec3{-0.5, 0.5, -0.1}, 0, 0, 0, 1.0)
 
 	/**
 		End of My Testing Area
@@ -52,8 +56,8 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 
 	// SlideShowSpecific
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
-	d.slideshow.LoadTransitions("./assets/transitions")
-
+	d.slideshow.LoadTransitions("./assets/transitions", d.renderer.GetProjection())
+	elapsed = 0.0
 	//initFont()
 	return d
 }
@@ -64,12 +68,18 @@ func (d *Display) SetWindowSize(width, height int) {
 	d.windowHeight = float32(height)
 }
 
+var elapsed float64
+
 //Render make all updates for rendering
 func (d *Display) Render(time float64) {
+	/*duration := float32(time - elapsed)
+	elapsed = time
+	d.entity.IncreasePosition(0.09*duration, -0.02*duration, 0)
+	d.slideshow.SlideShowEntity.IncreasePosition(0.05*duration, -0.02*duration, 0)*/
 
 	d.slideshow.Render(time, d.renderer)
 	d.renderer.UseDefaultShader()
-	d.renderer.Render(d.rawModel)
+	d.renderer.RenderEntity(d.entity, d.renderer.Shader)
 }
 
 //Delete unload all data from gpu

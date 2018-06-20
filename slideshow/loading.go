@@ -71,7 +71,7 @@ func (s *Slideshow) LoadImageFromRemote(url string) {
 }
 
 //LoadTransitions load all transitions with .glsl file extension from an specified path
-func (s *Slideshow) LoadTransitions(path string) {
+func (s *Slideshow) LoadTransitions(path string, projection [16]float32) {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
@@ -80,7 +80,7 @@ func (s *Slideshow) LoadTransitions(path string) {
 	for _, f := range files {
 		if !f.IsDir() && strings.Contains(f.Name(), ".glsl") {
 			sa, _ := loadFromFile(path + "/" + f.Name())
-			s.transitions = append(s.transitions, gfx.MakeTransition(gfx.Stretch, sa, f.Name()))
+			s.transitions = append(s.transitions, gfx.MakeTransition(gfx.Stretch, sa, f.Name(), projection))
 		}
 	}
 }

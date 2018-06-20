@@ -4,13 +4,15 @@ import (
 	"math"
 	"math/rand"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 //Slideshow the Struct for the slideshow
 type Slideshow struct {
-	model *objects.RawModel
+	//model *objects.RawModel
+	SlideShowEntity *objects.Entity
 
 	loaders []*loader
 
@@ -37,10 +39,10 @@ type Slideshow struct {
 func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader) *Slideshow {
 
 	verts := []float32{
-		-1.0, 1.0, 0, //V0
-		-1.0, -1.0, 0, //V1
-		1.0, -1.0, 0, //V2
-		1.0, 1.0, 0, //V3
+		-1.0, 1.0, -0.1, //V0
+		-1.0, -1.0, -0.1, //V1
+		1.0, -1.0, -0.1, //V2
+		1.0, 1.0, -0.1, //V3
 	}
 
 	inds := []int32{
@@ -49,9 +51,10 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 	}
 
 	model := loader.LoadToVAO(verts, inds)
+	entity := objects.MakeEntity(model, mgl32.Vec3{0, 0, -2.10}, 0, 0, 0, 1.0)
 
 	s := &Slideshow{
-		model: model,
+		SlideShowEntity: entity,
 
 		currentIndex:      0,
 		currentTransition: 0,
@@ -67,17 +70,6 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 
 //Render Render the transitions
 func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
-	s.renderTransition(time)
-	renderer.Render(s.model)
-}
-
-//UpdateWindowSize get Called if the window would resized
-/*func (s *Slideshow) UpdateWindowSize(width, height float32) {
-	s.windowWidth = width
-	s.windowHeight = height
-}*/
-
-func (s *Slideshow) renderTransition(time float64) {
 	index := s.index(time)
 
 	aviableSlides := s.onlyAviableSlides()
@@ -99,8 +91,11 @@ func (s *Slideshow) renderTransition(time float64) {
 	}
 
 	transition := s.transitions[s.currentTransition]
+
 	transition.Draw(s.progress(time), from.Tex, to.Tex)
 
+	//begin render Entity after all shader processing is done!
+	renderer.RenderEntity(s.SlideShowEntity, transition.Shader)
 }
 
 func (s *Slideshow) onlyAviableSlides() []*gfx.Slide {

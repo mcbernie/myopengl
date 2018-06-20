@@ -61,8 +61,12 @@ const (
 	#version 120
 	attribute vec2 position;
 	varying vec2 _uv;
+
+	uniform mat4 transformationMatrix;
+	uniform mat4 projectionMatrix;
+
 	void main() {
-	gl_Position = vec4(position,0.0,1.0);
+	gl_Position = projectionMatrix * transformationMatrix * vec4(position,0.0,1.0);
 	vec2 uv = position * 0.5 + 0.5;
 	_uv = vec2(uv.x, 1.0 - uv.y);
 	}`
@@ -95,7 +99,7 @@ func makeFrag(transitionGlsl string, resizeMode ResizeMode) string {
 }
 
 //MakeTransition generate a Transition with glsl
-func MakeTransition(resizeMode ResizeMode, glsl string, name string) *Transition {
+func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection [16]float32) *Transition {
 
 	// create a shader and put it in the thing here
 	vertShader, err := NewShader(vert, glHelper.GlVertexShader)
@@ -111,8 +115,10 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string) *Transition
 	if err != nil {
 		panic("Program Error:" + err.Error())
 	}
-	//program.Use()
+	program.Use()
 	program.AddAttribute("position")
+	program.AddUniform("transformationMatrix")
+	program.AddUniform("projectionMatrix")
 	program.AddUniform("ratio")
 	program.AddUniform("progress")
 	program.AddUniform("from")
@@ -120,6 +126,9 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string) *Transition
 	program.AddUniform("_fromR")
 	program.AddUniform("_toR")
 
+	glHelper.UniformMatrix4(program.GetUniform("projectionMatrix"), projection)
+
+	program.UnUse()
 	return &Transition{
 		Shader: program,
 		glsl:   glsl,

@@ -6,6 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 //Init Initialize OpenGL
@@ -177,4 +178,10 @@ func ActiveTexture(texture uint32) {
 //Ptr get an unsafe Pointer for gl objects
 func Ptr(data interface{}) unsafe.Pointer {
 	return gl.Ptr(data)
+}
+
+//gl.UniformMatrix4fv(shader.GetUniform("transformationMatrix"), 1, false, &translationMatrix[0])
+
+func UniformMatrix4(location int32, matrix mgl32.Mat4) {
+	gl.UniformMatrix4fv(location, 1, false, &matrix[0])
 }

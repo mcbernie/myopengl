@@ -45,6 +45,11 @@ func (prog *Program) Use() {
 	glHelper.UseProgram(prog.handle)
 }
 
+//UnUse Disable the Program in OpenGL
+func (prog *Program) UnUse() {
+	glHelper.UseProgram(0)
+}
+
 //Link Linking the Program with OpenGL
 func (prog *Program) Link() error {
 	glHelper.LinkProgram(prog.handle)
