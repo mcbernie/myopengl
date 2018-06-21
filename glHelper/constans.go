@@ -34,4 +34,11 @@ const (
 	GlRgbA      = gl.RGBA
 
 	GlUnsignedByte = gl.UNSIGNED_BYTE
+
+	GlBlend            = gl.BLEND
+	GlSrcAlpha         = gl.SRC_ALPHA
+	GlOneMinusSrcAlpha = gl.ONE_MINUS_SRC_ALPHA
+	GlDepthTest        = gl.DEPTH_TEST
+
+	GlTriangles = gl.TRIANGLES
 )

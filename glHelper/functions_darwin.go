@@ -8,6 +8,12 @@ import (
 	"github.com/go-gl/gl/v2.1/gl"
 )
 
+func ErrorCheck() {
+	if err := gl.GetError(); err != 0 {
+		log.Println("Error in GenVertexArrays!", err)
+	}
+}
+
 //GenerateVertexArray Generate an VAO
 func GenerateVertexArray(n int32) uint32 {
 	var vao uint32

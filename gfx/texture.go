@@ -7,6 +7,7 @@ import (
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
 
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
@@ -36,6 +37,35 @@ func NewTexture(wrapR, wrapS int32) *Texture {
 		target: target,
 	}
 	return &texture
+}
+
+//NewTextureFromFile Loads an Texture from Image file
+func NewTextureFromFile(path string) *Texture {
+
+	img, err := gfx.LoadImageFromFile(path)
+
+	if err != nil {
+		panic("error on loading texture from file!")
+	}
+
+	var handle uint32
+	glHelper.GenTextures(1, &handle)
+
+	target := uint32(glHelper.GlTexture2D)
+
+	texture := Texture{
+		handle: handle,
+		target: target,
+	}
+
+	texture.SetImage(img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+
+	return &texture
+}
+
+//GetHandle retruns texture Handle
+func (tex *Texture) GetHandle() uint32 {
+	return tex.handle
 }
 
 //SetImage is for setting or replacing a image
@@ -71,7 +101,7 @@ func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 
 	glHelper.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
 
-	glHelper.GenerateMipmap(tex.handle)
+	//glHelper.GenerateMipmap(tex.handle)
 	return nil
 }
 
@@ -101,9 +131,4 @@ func (tex *Texture) SetUniform(uniformLoc int32) error {
 
 	glHelper.Uniform1i(uniformLoc, int32(tex.texUnit-glHelper.GlTexture0))
 	return nil
-}
-
-//GetHandle returns own texture handle
-func (tex *Texture) GetHandle() uint32 {
-	return tex.handle
 }

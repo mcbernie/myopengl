@@ -1,8 +1,12 @@
 package graphic
 
 import (
+	"log"
+
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/graphic/fonts"
+	"github.com/mcbernie/myopengl/graphic/gltext"
 	"github.com/mcbernie/myopengl/graphic/objects"
 	"github.com/mcbernie/myopengl/slideshow"
 )
@@ -19,6 +23,8 @@ type Display struct {
 	loader   *objects.Loader
 	rawModel *objects.RawModel
 	entity   *objects.Entity
+
+	fonts [16]*gltext.Font
 }
 
 //InitDisplay initialize a Display object
@@ -31,6 +37,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
 
+	//d.InitFont()
 	/**
 		My Testing Area
 	**/
@@ -50,6 +57,19 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 
 	d.entity = objects.MakeEntity(rawModel, mgl32.Vec3{-0.5, 0.5, -0.1}, 0, 0, 0, 1.0)
 
+	// --->>>
+	log.Println("InitTextMAster-->")
+	fonts.InitTextMaster(d.loader)
+
+	log.Println("Add Font->")
+	font := fonts.MakeFontType(d.loader.LoadTexture("assets/images/index.php-3.jpeg"), "assets/fonts/verdana.fnt")
+
+	log.Println("CreateGUIText->")
+	text := fonts.CreateGuiText("Dies ist ein Test", 3, font, [2]float32{0, 0}, 1, true)
+	text.SetColour(1, 0, 0)
+
+	// <<<----
+
 	/**
 		End of My Testing Area
 	**/
@@ -58,7 +78,6 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
 	d.slideshow.LoadTransitions("./assets/transitions", d.renderer.GetProjection())
 	elapsed = 0.0
-	//initFont()
 	return d
 }
 
@@ -80,10 +99,20 @@ func (d *Display) Render(time float64) {
 	d.slideshow.Render(time, d.renderer)
 	d.renderer.UseDefaultShader()
 	d.renderer.RenderEntity(d.entity, d.renderer.Shader)
+
+	/*gl.Disable(gl.DEPTH_TEST)
+	glHelper.UseProgram(0)
+	gl.Color4f(1.0, 1.0, 1.0, 0.9)
+	d.fonts[10].Printf(0, 0, "Hallo Test")*/
+	fonts.TextMaster.Render()
 }
 
 //Delete unload all data from gpu
 func (d *Display) Delete() {
 	d.loader.CleanUP()
 	d.slideshow.Delete()
+
+	for i := range d.fonts {
+		d.fonts[i].Release()
+	}
 }

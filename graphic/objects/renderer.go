@@ -74,6 +74,7 @@ func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
 	glHelper.UniformMatrix4(shader.GetUniform("transformationMatrix"), translationMatrix)
 
 	gl.DrawElements(gl.TRIANGLES, e.Model.GetVertexCount(), gl.UNSIGNED_INT, gl.PtrOffset(0))
+
 	gl.DisableVertexAttribArray(0)
 
 	glHelper.BindVertexArray(0)

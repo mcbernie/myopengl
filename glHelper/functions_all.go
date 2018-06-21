@@ -14,10 +14,12 @@ func Init() error {
 	return gl.Init()
 }
 
+//ClearColor clear screen with specified color and alpha value
 func ClearColor(r, g, b, a float32) {
 	gl.ClearColor(r, g, b, a)
 }
 
+//Clear clear mask specified
 func Clear(mask uint32) {
 	gl.Clear(mask)
 }
@@ -136,16 +138,6 @@ func CreateProgram() uint32 {
 	return gl.CreateProgram()
 }
 
-//Uniform1f Set 1 float32 value in location
-func Uniform1f(location int32, v0 float32) {
-	gl.Uniform1f(location, v0)
-}
-
-//Uniform1i set 1 int32 value in location
-func Uniform1i(location int32, v0 int32) {
-	gl.Uniform1i(location, v0)
-}
-
 //GenTextures generate x textures and returns an handle or array of handles
 func GenTextures(n int32, handle *uint32) {
 	gl.GenTextures(n, handle)
@@ -167,10 +159,12 @@ func GenerateMipmap(handle uint32) {
 	gl.GenerateMipmap(handle)
 }
 
+//BindTexture bind a Texture to current context
 func BindTexture(target uint32, texture uint32) {
 	gl.BindTexture(target, texture)
 }
 
+//ActiveTexture bind texture to current context
 func ActiveTexture(texture uint32) {
 	gl.ActiveTexture(texture)
 }
@@ -180,8 +174,58 @@ func Ptr(data interface{}) unsafe.Pointer {
 	return gl.Ptr(data)
 }
 
+func Enable(cap uint32) {
+	gl.Enable(cap)
+}
+
+func Disable(cap uint32) {
+	gl.Disable(cap)
+}
+
+func BlendFunc(sfactor uint32, dfactor uint32) {
+	gl.BlendFunc(sfactor, dfactor)
+}
+
 //gl.UniformMatrix4fv(shader.GetUniform("transformationMatrix"), 1, false, &translationMatrix[0])
 
+//Uniform1f Set 1 float32 value in location
+func Uniform1f(location int32, v0 float32) {
+	gl.Uniform1f(location, v0)
+}
+
+//Uniform1i set 1 int32 value in location
+func Uniform1i(location int32, v0 int32) {
+	gl.Uniform1i(location, v0)
+}
+
+//UniformMatrix4 set an Uniform 4*3 Matrix
 func UniformMatrix4(location int32, matrix mgl32.Mat4) {
 	gl.UniformMatrix4fv(location, 1, false, &matrix[0])
+}
+
+//Uniform2f set an 2 float32 Vector
+func Uniform2f(location int32, v0 float32, v1 float32) {
+	gl.Uniform2f(location, v0, v1)
+}
+
+//Uniform3f set an 3 float32 Vector
+func Uniform3f(location int32, v [3]float32) {
+	gl.Uniform3f(location, v[0], v[1], v[2])
+}
+
+//Uniform4f set an 4 float32 Vector
+func Uniform4f(location int32, v [4]float32) {
+	gl.Uniform4f(location, v[0], v[1], v[2], v[3])
+}
+
+func EnableVertexAttribArray(v int) {
+	gl.EnableVertexAttribArray(uint32(v))
+}
+
+func DisableVertexAttribArray(v int) {
+	gl.DisableVertexAttribArray(uint32(v))
+}
+
+func DrawTrianglesArray(first, vertexCount int32) {
+	gl.DrawArrays(GlTriangles, first, vertexCount)
 }

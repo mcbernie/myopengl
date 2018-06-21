@@ -6,6 +6,25 @@ import (
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
+const (
+	//VertexShaderType for openGL Program / Shader
+	VertexShaderType = glHelper.GlVertexShader
+	//FragmentShaderType for openGL Program / Shader
+	FragmentShaderType = glHelper.GlFragmentShader
+)
+
+type ShaderProgram interface {
+	Attach(shaders ...*Shader)
+	Use()
+	UnUse()
+	Link() error
+	AddAttribute(name string)
+	AddUniform(name string)
+	GetUniform(name string) int32
+	GetAttribute(name string) int32
+	BindAttribute(index uint32, name string)
+}
+
 //Shader is the structure for Shader
 type Shader struct {
 	handle uint32
@@ -13,6 +32,7 @@ type Shader struct {
 
 //Program is the structure to hold the gl Program with all Shaders
 type Program struct {
+	ShaderProgram
 	handle             uint32
 	shaders            []*Shader
 	uniformLocations   map[string]int32

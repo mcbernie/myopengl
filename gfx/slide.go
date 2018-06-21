@@ -99,7 +99,7 @@ func (s *Slide) LoadImageFromRemote(url string) error {
 
 //LoadImageFromFile Load an image from Path
 func (s *Slide) LoadImageFromFile(path string) error {
-	img, err := loadImageFromFile(path)
+	img, err := LoadImageFromFile(path)
 	if err != nil {
 		log.Println("failed to load image from path:" + path)
 		return err
@@ -145,8 +145,8 @@ func (s *Slide) Update() {
 	}
 }
 
-//loadImageFromFile Loads an image from file
-func loadImageFromFile(file string) (image.Image, error) {
+//LoadImageFromFile Loads an image from file
+func LoadImageFromFile(file string) (image.Image, error) {
 	imgFile, err := os.Open(file)
 	if err != nil {
 		return nil, err
