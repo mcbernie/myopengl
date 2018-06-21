@@ -4,7 +4,6 @@ import (
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
@@ -51,7 +50,7 @@ func (l *Loader) createVAO() uint32 {
 
 func (l *Loader) LoadTexture(filename string) uint32 {
 
-	tex := gfx.NewTextureFromFile(filename)
+	tex := NewTextureFromFile(filename)
 	handle := tex.GetHandle()
 	l.textures = append(l.textures, handle)
 	return handle
