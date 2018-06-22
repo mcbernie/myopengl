@@ -116,7 +116,7 @@ func programLoop(window *glfw.Window) error {
 
 	defer display.Delete()
 
-	gl.Enable(gl.DEPTH_TEST)
+	//gl.Enable(gl.DEPTH_TEST)
 
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
@@ -130,8 +130,8 @@ func programLoop(window *glfw.Window) error {
 
 		// background color
 		glHelper.ClearColor(0.0, 0.0, 0.0, 1.0)
-		//glHelper.Clear(glHelper.GlColorBufferBit)
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		glHelper.Clear(glHelper.GlColorBufferBit)
+		//gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		display.Render(glfw.GetTime())
 

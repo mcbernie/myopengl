@@ -8,16 +8,18 @@ const (
 	GlColorBufferBit = gl.COLOR_BUFFER_BIT
 
 	//GlFragmentShader Define Shader as Fragment Shader
-	GlFragmentShader   = gl.FRAGMENT_SHADER
-	GlVertexShader     = gl.VERTEX_SHADER
-	GlCompileStatus    = gl.COMPILE_STATUS
-	GlLinkStatus       = gl.LINK_STATUS
-	GlClampToEdge      = gl.CLAMP_TO_EDGE
-	GlTextureWrapR     = gl.TEXTURE_WRAP_R
-	GlTextureWrapS     = gl.TEXTURE_WRAP_S
-	GlTextureMinFilter = gl.TEXTURE_MIN_FILTER
-	GlTextureMagFilter = gl.TEXTURE_MAG_FILTER
-	GlLinear           = gl.LINEAR
+	GlFragmentShader     = gl.FRAGMENT_SHADER
+	GlVertexShader       = gl.VERTEX_SHADER
+	GlCompileStatus      = gl.COMPILE_STATUS
+	GlLinkStatus         = gl.LINK_STATUS
+	GlClampToEdge        = gl.CLAMP_TO_EDGE
+	GlTextureWrapR       = gl.TEXTURE_WRAP_R
+	GlTextureWrapS       = gl.TEXTURE_WRAP_S
+	GlTextureMinFilter   = gl.TEXTURE_MIN_FILTER
+	GlTextureMagFilter   = gl.TEXTURE_MAG_FILTER
+	GlLinearMipmapLinear = gl.LINEAR_MIPMAP_LINEAR
+	GlTextureLodBias     = gl.TEXTURE_LOD_BIAS
+	GlLinear             = gl.LINEAR
 
 	//GlTexture0 all Textures..
 	GlTexture0 = gl.TEXTURE0

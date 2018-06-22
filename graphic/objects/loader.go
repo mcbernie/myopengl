@@ -4,6 +4,7 @@ import (
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
@@ -48,9 +49,10 @@ func (l *Loader) createVAO() uint32 {
 	return vao
 }
 
+//LoadTexture Loads an Texture returns the handle
 func (l *Loader) LoadTexture(filename string) uint32 {
 
-	tex := NewTextureFromFile(filename)
+	tex := gfx.NewTextureFromFile(filename)
 	handle := tex.GetHandle()
 	l.textures = append(l.textures, handle)
 	return handle
@@ -64,9 +66,9 @@ func (l *Loader) storeDataInAttributeList(attributeNumber uint32, coordinateSize
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(data)*4, gl.Ptr(data), gl.STATIC_DRAW)
 
-	gl.EnableVertexAttribArray(0)
+	//gl.EnableVertexAttribArray(0)
 	gl.VertexAttribPointer(attributeNumber, coordinateSize, gl.FLOAT, false, 0, gl.PtrOffset(0))
-	gl.DisableVertexAttribArray(0)
+	//gl.DisableVertexAttribArray(0)
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 }
 

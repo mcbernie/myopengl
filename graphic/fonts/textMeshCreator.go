@@ -39,13 +39,19 @@ func (t *textMeshCreator) createStructure(text *GUIText) []*line {
 	for _, c := range chars {
 		ascii := int32(c)
 		if ascii == spaceASCII {
-
 			if added := currentLine.attemptToAddWord(currentWord); !added {
 				lines = append(lines, currentLine)
 				currentLine = createLine(t.metaData.spaceWidth, text.fontSize, text.lineMaxSize)
 				currentLine.attemptToAddWord(currentWord)
 			}
 
+			currentWord = createWord(text.fontSize)
+			continue
+		}
+
+		if ascii == int32('\n') {
+			lines = append(lines, currentLine)
+			currentLine = createLine(t.metaData.spaceWidth, text.fontSize, text.lineMaxSize)
 			currentWord = createWord(text.fontSize)
 			continue
 		}
@@ -78,7 +84,7 @@ func (t *textMeshCreator) createQuadVertices(text *GUIText, lines []*line) *text
 
 	for _, l := range lines {
 		if text.centerText {
-			curserX = (l.maxLength - l.getLineLength()) / 2
+			curserX = (l.maxLength - l.getLineLength()) / 2.0
 		}
 
 		for _, w := range l.getWords() {
@@ -104,10 +110,10 @@ func addVerticesForCharacter(curserX, curserY float32, letter *character, fontSi
 	y := curserY + (letter.yOffset * fontSize)
 	maxX := x + (letter.sizeX * fontSize)
 	maxY := y + (letter.sizeY * fontSize)
-	properX := (2 * x) - 1
-	properY := (-2 * y) + 1
-	properMaxX := (2 * maxX) - 1
-	properMaxY := (-2 * maxY) + 1
+	properX := float32(2.0*x) - 1.0
+	properY := float32(-2.0*y) + 1.0
+	properMaxX := float32(2.0*maxX) - 1.0
+	properMaxY := float32(-2.0*maxY) + 1.0
 	addVertices(vertices, properX, properY, properMaxX, properMaxY)
 
 }

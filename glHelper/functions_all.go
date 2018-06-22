@@ -14,6 +14,14 @@ func Init() error {
 	return gl.Init()
 }
 
+func ErrorCheck() string {
+	if err := gl.GetError(); err != 0 {
+		return fmt.Sprintf("ErroCode: %d", err)
+	}
+
+	return ""
+}
+
 //ClearColor clear screen with specified color and alpha value
 func ClearColor(r, g, b, a float32) {
 	gl.ClearColor(r, g, b, a)
@@ -144,19 +152,19 @@ func GenTextures(n int32, handle *uint32) {
 }
 
 //TexParameteri set parameter pname with value param in texture handle
-func TexParameteri(handle uint32, pname uint32, param int32) {
-	gl.TexParameteri(handle, pname, param)
+func TexParameteri(target uint32, pname uint32, param int32) {
+	gl.TexParameteri(target, pname, param)
 }
 
 //TexImage2D setup the texture2d
-func TexImage2D(handle uint32, level int32, internalFmt int32, w int32, h int32,
+func TexImage2D(target uint32, level int32, internalFmt int32, w int32, h int32,
 	border int32, format uint32, xtype uint32, pixels unsafe.Pointer) {
-	gl.TexImage2D(handle, level, internalFmt, w, h, border, format, xtype, pixels)
+	gl.TexImage2D(target, level, internalFmt, w, h, border, format, xtype, pixels)
 }
 
 //GenerateMipmap generates a MipMap
-func GenerateMipmap(handle uint32) {
-	gl.GenerateMipmap(handle)
+func GenerateMipmap(target uint32) {
+	gl.GenerateMipmap(target)
 }
 
 //BindTexture bind a Texture to current context
@@ -166,6 +174,7 @@ func BindTexture(target uint32, texture uint32) {
 
 //ActiveTexture bind texture to current context
 func ActiveTexture(texture uint32) {
+	//gl.ActiveTexture(gl.TEXTURE_2D)
 	gl.ActiveTexture(texture)
 }
 

@@ -1,8 +1,6 @@
 package graphic
 
 import (
-	"log"
-
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/graphic/fonts"
@@ -35,6 +33,8 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	}
 
 	d.loader = objects.MakeLoader()
+	//mtex := d.loader.LoadTexture("assets/fonts/verdana.png")
+
 	d.renderer = objects.MakeRenderer()
 
 	//d.InitFont()
@@ -58,16 +58,10 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.entity = objects.MakeEntity(rawModel, mgl32.Vec3{-0.5, 0.5, -0.1}, 0, 0, 0, 1.0)
 
 	// --->>>
-	log.Println("InitTextMAster-->")
 	fonts.InitTextMaster(d.loader)
-
-	log.Println("Add Font->")
-	font := fonts.MakeFontType(d.loader.LoadTexture("assets/images/index.php-3.jpeg"), "assets/fonts/verdana.fnt")
-
-	log.Println("CreateGUIText->")
-	text := fonts.CreateGuiText("Dies ist ein Test", 3, font, [2]float32{0, 0}, 1, true)
-	text.SetColour(1, 0, 0)
-
+	font := fonts.MakeFontType(d.loader.LoadTexture("assets/fonts/verdana.png"), "assets/fonts/verdana.fnt")
+	text := fonts.CreateGuiText("Hallo, dies ist ein Test!\nWie geht es dir?", 2, font, [2]float32{0.0, 0.0}, 4, false)
+	text.SetColour(0.5, 0.2, 1)
 	// <<<----
 
 	/**

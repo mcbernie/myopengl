@@ -7,7 +7,6 @@ import (
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
 
-	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
@@ -42,7 +41,7 @@ func NewTexture(wrapR, wrapS int32) *Texture {
 //NewTextureFromFile Loads an Texture from Image file
 func NewTextureFromFile(path string) *Texture {
 
-	img, err := gfx.LoadImageFromFile(path)
+	img, err := LoadImageFromFile(path)
 
 	if err != nil {
 		panic("error on loading texture from file!")
@@ -50,7 +49,6 @@ func NewTextureFromFile(path string) *Texture {
 
 	var handle uint32
 	glHelper.GenTextures(1, &handle)
-
 	target := uint32(glHelper.GlTexture2D)
 
 	texture := Texture{
@@ -91,7 +89,7 @@ func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 	tex.width = width
 	tex.height = height
 
-	tex.Bind(glHelper.GlTexture0)
+	tex.Bind(tex.unit)
 	defer tex.UnBind()
 
 	glHelper.TexParameteri(tex.target, glHelper.GlTextureWrapR, wrapR)
@@ -101,7 +99,10 @@ func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 
 	glHelper.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
 
-	//glHelper.GenerateMipmap(tex.handle)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinearMipmapLinear)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureLodBias, 0)
+	glHelper.GenerateMipmap(tex.target)
+
 	return nil
 }
 
@@ -109,18 +110,20 @@ func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 func (tex *Texture) Bind(unit uint32) {
 	glHelper.ActiveTexture(glHelper.GlTexture0 + unit)
 	glHelper.BindTexture(tex.target, tex.handle)
+
 	tex.unit = glHelper.GlTexture0 + unit
 }
 
 //UnBind remove a Texture from OpenGL
 func (tex *Texture) UnBind() {
 	tex.unit = 0
-	glHelper.BindTexture(tex.target, 0)
+	//glHelper.ActiveTexture(0)
+	//glHelper.BindTexture(tex.target, 0)
 }
 
 //Delete remove a texture from Memory
 func (tex *Texture) Delete() {
-	glHelper.DeleteTextures(1, &tex.target)
+	glHelper.DeleteTextures(1, &tex.handle)
 }
 
 //SetUniform sets the uniform Variable in OpenGL

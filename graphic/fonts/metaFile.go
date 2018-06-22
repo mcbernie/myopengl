@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	padTop = iota
-	padLeft
-	padBottom
-	padRight
+	padTop    = 0
+	padLeft   = 1
+	padBottom = 2
+	padRight  = 3
 
 	desiredPadding = padRight
 )
@@ -37,7 +37,7 @@ type metaFile struct {
 
 func loadMetaFile(path string) (*metaFile, error) {
 	m := metaFile{
-		aspectRatio: 1,
+		aspectRatio: 0.9,
 		values:      make(map[string]string),
 		metaData:    make(map[int32]*character),
 	}
@@ -128,7 +128,6 @@ func (m *metaFile) loadLineSizes() {
 	lineHeightPixels := m.getValueOfVariable("lineHeight") - m.paddingHeight
 	m.verticalPerPixelSize = lineHeight / float32(lineHeightPixels)
 	m.horizontalPerPixelSize = m.verticalPerPixelSize / m.aspectRatio
-
 }
 
 /**
@@ -143,7 +142,7 @@ func (m *metaFile) loadCharacterData(imageWidth int32) {
 	m.processNextLine()
 
 	for m.processNextLine() {
-		c := m.loadCharacter(imageWidth)
+		c := m.loadCharacter(float32(imageWidth))
 		if c != nil {
 			m.metaData[c.id] = c
 		}
@@ -160,26 +159,25 @@ func (m *metaFile) loadCharacterData(imageWidth int32) {
  *            - the size of the texture atlas in pixels.
  * @return The data about the character.
  */
-func (m *metaFile) loadCharacter(imageSize int32) *character {
+func (m *metaFile) loadCharacter(imageSize float32) *character {
 	id := m.getValueOfVariable("id")
 	if id == spaceASCII {
 		m.spaceWidth = float32((m.getValueOfVariable("xadvance") - m.paddingWidth)) * m.horizontalPerPixelSize
 		return nil
 	}
 
-	myX := m.getValueOfVariable("x")
-	//log.Println("The Xtex??", imageSize)
-	xTex := float32(myX+(m.padding[padLeft]-desiredPadding)) / float32(imageSize)
+	xTex := float32(m.getValueOfVariable("x")+(m.padding[padLeft]-desiredPadding)) / float32(imageSize)
 	yTex := float32(m.getValueOfVariable("y")+(m.padding[padTop]-desiredPadding)) / float32(imageSize)
 
 	//log.Println("xTex:", xTex, " yTex:", yTex)
-	width := m.getValueOfVariable("width") - (m.paddingWidth - (2 * desiredPadding))
-	height := m.getValueOfVariable("height") - ((m.paddingHeight) - (2 * desiredPadding))
+	width := float32(m.getValueOfVariable("width") - (m.paddingWidth - (2 * desiredPadding)))
+	height := float32(m.getValueOfVariable("height") - ((m.paddingHeight) - (2 * desiredPadding)))
 
+	//log.Println("width:", width, " height:", height)
 	quadWidth := float32(width) * m.horizontalPerPixelSize
 	quadHeight := float32(height) * m.verticalPerPixelSize
-	xTexSize := float32(width / imageSize)
-	yTexSize := float32(height / imageSize)
+	xTexSize := width / imageSize
+	yTexSize := height / imageSize
 
 	xOff := float32(m.getValueOfVariable("xoffset")+m.padding[padLeft]-desiredPadding) * m.horizontalPerPixelSize
 	yOff := float32(m.getValueOfVariable("yoffset")+(m.padding[padTop]-desiredPadding)) * m.verticalPerPixelSize

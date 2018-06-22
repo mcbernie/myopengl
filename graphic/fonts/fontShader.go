@@ -1,8 +1,6 @@
 package fonts
 
 import (
-	"log"
-
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
@@ -13,12 +11,12 @@ type FontShader struct {
 
 func CreateFontShader() *FontShader {
 	// create a shader and put it in the thing here
-	vertShader, err := gfx.NewShaderFromFile("assets/fonts/font.vert", gfx.VertexShaderType)
+	vertShader, err := gfx.NewShaderFromFile("assets/shaders/font.vert", gfx.VertexShaderType)
 	if err != nil {
 		panic("VertexShader error:" + err.Error())
 	}
 
-	fragShader, err := gfx.NewShaderFromFile("assets/fonts/font.frag", gfx.FragmentShaderType)
+	fragShader, err := gfx.NewShaderFromFile("assets/shaders/font.frag", gfx.FragmentShaderType)
 	if err != nil {
 		panic("FragmentShader error:" + err.Error())
 	}
@@ -33,6 +31,7 @@ func CreateFontShader() *FontShader {
 	f := &FontShader{program}
 
 	f.Use()
+	f.AddUniform("fontAtlas")
 	f.AddUniform("colour")
 	f.AddUniform("translation")
 
@@ -40,8 +39,6 @@ func CreateFontShader() *FontShader {
 	f.BindAttribute(1, "textureCoords")
 
 	f.UnUse()
-
-	log.Println("called.. createfontShader...")
 
 	return f
 }

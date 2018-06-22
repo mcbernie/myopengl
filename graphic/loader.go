@@ -38,6 +38,7 @@ func (d *Display) LoadRemoteImage(path string, uid string) {
 
 //LoadLocalImage load an local image for slideshow
 func (d *Display) LoadLocalImage(path string, uid string) {
+	log.Println("LoadLocalImage:", uid)
 	d.slideshow.CreateNewSlideFromImageFile(path, uid)
 }
 

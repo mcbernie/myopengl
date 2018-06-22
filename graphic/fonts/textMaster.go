@@ -28,8 +28,7 @@ func (t *textMaster) Render() {
 func (t *textMaster) LoadText(text *GUIText) {
 	font := text.font
 	data := font.loadText(text)
-	//log.Println("vertexPositions:", data.vertexPositions)
-	//log.Println("textureCoords:", data.textureCoords)
+
 	vao := t.loader.LoadVertexAndTextureToVAO(data.vertexPositions, data.textureCoords)
 	text.setMeshInfo(vao, data.getVertexCount())
 
