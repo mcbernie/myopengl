@@ -40,8 +40,8 @@ func main() {
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	//glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	//glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-
-	window, err := glfw.CreateWindow(windowWidth, windowHeight, "basic slideshow", nil, nil)
+	//glfw.CreateWindow(windowWidth, windowHeight, "basic slideshow", nil, nil)
+	window, err := gfx.CreateWindow(windowWidth, windowHeight, "basic slideshow")
 	if err != nil {
 		panic(err)
 	}

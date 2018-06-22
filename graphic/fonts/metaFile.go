@@ -37,7 +37,7 @@ type metaFile struct {
 
 func loadMetaFile(path string) (*metaFile, error) {
 	m := metaFile{
-		aspectRatio: 0.9,
+		aspectRatio: 1.0,
 		values:      make(map[string]string),
 		metaData:    make(map[int32]*character),
 	}
