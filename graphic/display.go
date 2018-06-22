@@ -41,10 +41,18 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	**/
 	vertices := []float32{
 		-0.5, 0.5, 0, //V0
-		-0.5, -0.5, 0, //V1
-		0.5, -0.5, 0, //V2
-		0.5, 0.5, 0, //V3
+		-0.5, 0.45, 0, //V1
+		-0.4, 0.45, 0, //V2
+		-0.4, 0.5, 0, //V3
 	}
+
+	// Important->
+	/*
+		v0 oben links
+		v1 unten links
+		v2 unten rechts
+		v3 oben rechts
+	*/
 
 	indicies := []int32{
 		0, 1, 3, //Top Left triangle (V0, V1, V3)
@@ -53,7 +61,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 
 	rawModel := d.loader.LoadToVAO(vertices, indicies)
 
-	d.entity = objects.MakeEntity(rawModel, mgl32.Vec3{-0.5, 0.5, -0.1}, 0, 0, 0, 1.0)
+	d.entity = objects.MakeEntity(rawModel, mgl32.Vec3{0, 0, -1.0}, 0, 0, 0, 1.0)
 
 	// --->>>
 	fonts.InitTextMaster(d.loader)
@@ -91,12 +99,13 @@ func (d *Display) Render(time float64) {
 	frameCount++
 
 	if delta >= 1 {
-		//log.Println(1000 / float64(frameCount))
 		fps := float64(frameCount) / delta
-		fonts.TextMaster.RemoveText(d.fpsText)
+
+		d.fpsText.Remove()
 		d.fpsText = fonts.CreateGuiText(fmt.Sprintf("FPS:%.3f", fps), 0.7, d.font, [2]float32{0.0, 0.0}, 4, false)
 		d.fpsText.SetColourRGB(246, 122, 140)
-		d.entity.SetColourRGB(255, 0, 10, 125)
+
+		d.entity.SetColourRGB(255, 0, 10, 80)
 		if fps < 60 {
 			d.fpsText.SetColour(0.8, 0.8, 0.8)
 			if fps < 30 {
