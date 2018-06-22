@@ -6,7 +6,8 @@ const (
 )
 
 type textMeshCreator struct {
-	metaData *metaFile
+	metaData      *metaFile
+	maxLineHeight float32
 }
 
 func makeTextMeshCreator(metaFile string) (*textMeshCreator, error) {

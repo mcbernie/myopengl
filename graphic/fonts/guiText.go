@@ -41,7 +41,7 @@ func (g *GUIText) SetNumberOfLines(number int32) {
 }
 
 func (g *GUIText) Remove() {
-	//TextMaster.RemoveText(g)
+	TextMaster.RemoveText(g)
 }
 
 func (g *GUIText) getFont() *FontType {
@@ -52,6 +52,12 @@ func (g *GUIText) SetColour(rC, gC, bC float32) {
 	g.colour[0] = rC
 	g.colour[1] = gC
 	g.colour[2] = bC
+}
+
+func (g *GUIText) SetColourRGB(rC, gC, bC int) {
+	g.colour[0] = (1.0 / 255.0) * float32(rC)
+	g.colour[1] = (1.0 / 255.0) * float32(gC)
+	g.colour[2] = (1.0 / 255.0) * float32(bC)
 }
 
 func (g *GUIText) getMesh() uint32 {

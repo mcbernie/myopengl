@@ -30,6 +30,7 @@ func (t *textMaster) LoadText(text *GUIText) {
 	data := font.loadText(text)
 
 	vao := t.loader.LoadVertexAndTextureToVAO(data.vertexPositions, data.textureCoords)
+
 	text.setMeshInfo(vao, data.getVertexCount())
 
 	if t.texts[font] == nil {
@@ -38,8 +39,25 @@ func (t *textMaster) LoadText(text *GUIText) {
 	t.texts[font] = append(t.texts[font], text)
 }
 
-func (t *textMaster) RemoveText(text GUIText) {
+func (t *textMaster) RemoveText(text *GUIText) {
 	// Remove A TEXT
+	for font, innerTexts := range t.texts {
+		var indexToDelete int
+		found := false
+		for i, t := range innerTexts {
+			if t == text {
+				indexToDelete = i
+				found = true
+				break
+			}
+		}
+
+		if found {
+			t.texts[font] = append(t.texts[font][:indexToDelete], t.texts[font][indexToDelete+1:]...)
+			break
+		}
+
+	}
 }
 
 func (t *textMaster) CleanUP() {

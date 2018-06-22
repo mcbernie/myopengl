@@ -71,6 +71,7 @@ func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
 	translationMatrix := rotMatrix.Mul4(mgl32.Translate3D(e.Position.X(), e.Position.Y(), e.Position.Z()))
 	translationMatrix = translationMatrix.Mul4(scaleMatrix)
 
+	glHelper.Uniform4f(shader.GetUniform("color"), e.color)
 	glHelper.UniformMatrix4(shader.GetUniform("transformationMatrix"), translationMatrix)
 
 	gl.DrawElements(gl.TRIANGLES, e.Model.GetVertexCount(), gl.UNSIGNED_INT, gl.PtrOffset(0))

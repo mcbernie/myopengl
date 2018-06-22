@@ -8,10 +8,10 @@ import (
 const defaultFrag = `
 #version 120
 //varying vec4 vColor;
-
+uniform vec4 color;
 void main()
 {
-  gl_FragColor = vec4(0.5, 0.8, 1.0, 0.5);
+  gl_FragColor = color;
 }
 `
 
@@ -22,6 +22,7 @@ attribute vec4 position;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
+
 
 void main()
 {
@@ -47,6 +48,7 @@ func createDefaultShader() (*gfx.Program, error) {
 		panic("Program Error:" + err.Error())
 	}
 
+	program.AddUniform("color")
 	/*program.AddUniform("u_projView")
 	program.AddAttribute("position")
 	program.AddAttribute("Color")*/

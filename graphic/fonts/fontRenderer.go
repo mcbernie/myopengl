@@ -26,7 +26,6 @@ func (fr *fontRenderer) render(texts TextList) {
 			fr.renderText(text)
 		}
 		glHelper.BindTexture(glHelper.GlTexture2D, 0)
-		glHelper.ActiveTexture(0)
 	}
 
 	fr.endRendering()

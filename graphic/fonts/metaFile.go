@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/mcbernie/myopengl/gfx"
 )
 
 const (
@@ -36,8 +38,9 @@ type metaFile struct {
 }
 
 func loadMetaFile(path string) (*metaFile, error) {
+	width, height := gfx.GetWindow().GetSize()
 	m := metaFile{
-		aspectRatio: 1.0,
+		aspectRatio: float32(width) / float32(height),
 		values:      make(map[string]string),
 		metaData:    make(map[int32]*character),
 	}

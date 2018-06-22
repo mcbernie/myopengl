@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"runtime"
-	"time"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 
@@ -73,7 +72,7 @@ func programLoop(window *glfw.Window) error {
 		display.SetWindowSize(width, height)
 	})
 
-	go func() {
+	/*go func() {
 
 		time.Sleep(10 * time.Second)
 		log.Println("now begin loading a image...")
@@ -113,7 +112,7 @@ func programLoop(window *glfw.Window) error {
 		}
 
 	}()
-
+	*/
 	defer display.Delete()
 
 	//gl.Enable(gl.DEPTH_TEST)
