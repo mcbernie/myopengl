@@ -90,9 +90,10 @@ func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 		slide.Update()
 	}
 
+	currentProgress := s.progress(time)
 	transition := s.transitions[s.currentTransition]
 
-	transition.Draw(s.progress(time), from.Tex, to.Tex)
+	transition.Draw(currentProgress, from.Draw(time, currentProgress), to.Draw(time, currentProgress))
 
 	//begin render Entity after all shader processing is done!
 	renderer.RenderEntity(s.SlideShowEntity, transition.Shader)

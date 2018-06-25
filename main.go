@@ -91,28 +91,44 @@ func programLoop(window *glfw.Window) error {
 		log.Println("Now testing the removeing of an texture")
 		display.RemoveSlide("lkih76555")
 	}()
-
+	*/
 	video, _ := display.CreateVideoSlide("TestVideo")
 	go func() {
 
-		v := gfx.InitVideo()
+		v := gfx.CreateVideo("assets/video/big_buck_bunny.mp4")
+		//v := gfx.CreateVideo("assets/video/tests-sample.mp4")
+
+		//v := gfx.InitVideo()
 		//v := gfx.InitVideoFromFile()
-		defer v.Delete()
+		defer v.CleanUP()
+
+		v.Play(video)
 
 		// wait for first frame...
-		img, err := v.GetFrame()
+		/*img, err := v.GetFrame()
 		if err == nil {
+			log.Println(img.Bounds())
 			video.SetFrame(img)
 			for {
-				img, err := v.GetFrame()
-				if err == nil {
-					video.SetFrame(img)
+				//time.Sleep(40 * time.Millisecond)
+				select {
+				case nextFrame := <-video.NextFrameChannel():
+					if nextFrame == true {
+
+						img, err := v.GetFrame()
+						if err == nil {
+							video.SetFrame(img)
+						}
+
+					}
+				default:
 				}
+
 			}
-		}
+		}*/
 
 	}()
-	*/
+
 	defer display.Delete()
 
 	//gl.Enable(gl.DEPTH_TEST)

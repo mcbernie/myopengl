@@ -27,6 +27,13 @@ type Slide struct {
 	imageReadyForReplace bool
 	img                  image.Image
 	IsVideo              bool
+
+	visibleMux sync.Mutex
+	visible    bool
+
+	gotNewFrame chan bool
+
+	progress float32
 }
 
 //GetUid Retruns own uid
@@ -67,10 +74,11 @@ func createSlide(uid string, isVideo bool) *Slide {
 
 	tex := NewTexture(glHelper.GlClampToEdge, glHelper.GlClampToEdge)
 	return &Slide{
-		uid:      uid,
-		Tex:      tex,
-		isLoaded: 0,
-		IsVideo:  isVideo,
+		uid:         uid,
+		Tex:         tex,
+		isLoaded:    0,
+		IsVideo:     isVideo,
+		gotNewFrame: make(chan bool),
 	}
 
 }
@@ -129,6 +137,23 @@ func (s *Slide) IsLoading() bool {
 
 }
 
+func (s *Slide) IsVisibile() bool {
+
+	s.visibleMux.Lock()
+	defer s.visibleMux.Unlock()
+
+	if s.progress > 1 {
+		return true
+	}
+	return false
+}
+
+func (s *Slide) SetVisibleTime(progress float32) {
+	s.visibleMux.Lock()
+	defer s.visibleMux.Unlock()
+	s.progress = progress
+}
+
 //Update lock if there is a news image
 func (s *Slide) Update() {
 	// check if there is a new image ready for replacing...
@@ -136,7 +161,7 @@ func (s *Slide) Update() {
 	defer s.imageMux.Unlock()
 
 	if s.IsVideo {
-		s.Tex.SetImage(s.img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+
 	} else {
 		if s.imageReadyForReplace {
 			s.Tex.SetImage(s.img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
@@ -161,6 +186,39 @@ func LoadImageFromFile(file string) (image.Image, error) {
 	}
 
 	return img, nil
+}
+
+/*var lastTime float64
+var frameCount int
+var fps float64*/
+
+var lastR int
+
+func (s *Slide) Draw(time float64, progress float32) *Texture {
+	//r := int(math.Floor(time)) % 40
+	/*delta := time - lastTime
+	lastTime = time
+	frameCount++
+
+	if delta >= 1 {
+		fps := float64(frameCount) / delta
+		log.Println(fps)
+		frameCount = 0
+		lastTime = time
+	}*/
+	/*s.imageMux.Lock()
+	defer s.imageMux.Unlock()*/
+
+	if s.IsVideo {
+		select {
+		case newFrame := <-s.gotNewFrame:
+			if newFrame == true {
+				s.Tex.SetImage(s.img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+			}
+		default:
+		}
+	}
+	return s.Tex
 }
 
 //SetFrame replace And set frame

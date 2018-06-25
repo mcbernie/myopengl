@@ -3,9 +3,9 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/andrebq/gas"
+  name = "github.com/3d0c/gmf"
   packages = ["."]
-  revision = "a3a07b0396b51dd679722307b06710873fc0429a"
+  revision = "feddda3ca02375a63362bfa8000fa1ad6e6861d1"
 
 [[projects]]
   branch = "master"
@@ -26,12 +26,6 @@
   revision = "5ab0e04e1f55a10f3a71b1fccc60ca2ee9a0bc02"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/golang/freetype"
-  packages = [".","raster","truetype"]
-  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
-
-[[projects]]
   name = "gocv.io/x/gocv"
   packages = ["."]
   revision = "09994446aec439b74e48f97f777026cc47a6fe14"
@@ -40,12 +34,12 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/image"
-  packages = ["font","math/f32","math/fixed"]
+  packages = ["math/f32"]
   revision = "af66defab954cb421ca110193eed9477c8541e2a"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8e1a1841ddb9cc7c15cfd66165bd9fb189aeb6afb5a4e37e6eaa081c028d5747"
+  inputs-digest = "4550cddfd36636eb8d30130ff46addb4d77271a419a7d6ce6c3c08eb711fda47"
   solver-name = "gps-cdcl"
   solver-version = 1

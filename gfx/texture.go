@@ -66,6 +66,11 @@ func (tex *Texture) GetHandle() uint32 {
 	return tex.handle
 }
 
+//SetDefaultImage create wrapR and wrapS by default
+func (tex *Texture) SetDefaultImage(img image.Image) error {
+	return tex.SetImage(img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+}
+
 //SetImage is for setting or replacing a image
 func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 	if img == nil {
