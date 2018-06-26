@@ -91,6 +91,7 @@ func CreateVideo(srcFileName string, slide *VideoSlide) *Video {
 		SetHeight(v.decCodec.Height()).
 		SetFormat(gmf.AV_PIX_FMT_BGR32) // see above
 
+	log.Println("Video Stream informations: width:", v.decCodec.Width(), " height:", v.decCodec.Height())
 	if err := v.decFrame.ImgAlloc(); err != nil {
 		log.Fatal("ImgAlloc: ", err)
 	}
@@ -143,11 +144,14 @@ func (v *Video) Play() {
 			if p, err := v.decFrame.Encode(v.decCodec); p != nil {
 
 				width, height := frame.Width(), frame.Height()
+				width = 1920
+				height = 1080
 				img := new(image.RGBA)
 				img.Pix = p.Data()
 				img.Stride = 4 * width // 4 bytes per pixel (RGBA), width times per row
 				img.Rect = image.Rect(0, 0, width, height)
 				time.Sleep(30 * time.Millisecond)
+				log.Println("Image len:", len(img.Pix), " imgBoumds:", img.Bounds(), " w:", width, " h:", height)
 				v.slide.imageMux.Lock()
 				v.slide.img = img
 				v.slide.imageMux.Unlock()

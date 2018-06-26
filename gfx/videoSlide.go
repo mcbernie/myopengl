@@ -3,6 +3,8 @@ package gfx
 import (
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
+
+	"github.com/mcbernie/myopengl/glHelper"
 )
 
 //VideoSlide A Simple VideoSlide element
@@ -14,9 +16,7 @@ type VideoSlide struct {
 	finishedVideo chan bool
 }
 
-//NewSlideForVideo Create a new Slide for Video content
-func NewSlideForVideo(path, uid string) *VideoSlide {
-
+func createVideoSlide(uid string) *VideoSlide {
 	s := createSlide(uid, true)
 
 	vs := &VideoSlide{
@@ -25,8 +25,28 @@ func NewSlideForVideo(path, uid string) *VideoSlide {
 	}
 	vs.MediaSlide = s
 
+	return vs
+}
+
+//NewSlideForVideo Create a new Slide for Video content
+func NewSlideForVideo(path, uid string) *VideoSlide {
+	vs := createVideoSlide(uid)
 	vs.video = CreateVideo(path, vs)
 	return vs
+}
+
+//NewSlideFromRemoteVideo Create a slide from remote Video
+func NewSlideFromRemoteVideo(url string, uid string) (*VideoSlide, error) {
+
+	ret := make(chan *VideoSlide)
+	glHelper.AddFunction(func() {
+		ret <- createVideoSlide(uid)
+	})
+	s := <-ret
+	s.video = CreateVideo(url, s)
+	s.BackgroundThread()
+
+	return s, nil
 }
 
 func (s *VideoSlide) BackgroundThread() {

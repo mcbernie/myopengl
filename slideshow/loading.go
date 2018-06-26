@@ -54,6 +54,18 @@ func (s *Slideshow) CreateNewSlideForVideo(path, uid string) (gfx.Slide, error) 
 
 }
 
+//CreateNewSlideForVideoRemote create a new slide from a image url
+func (s *Slideshow) CreateNewSlideForVideoRemote(url, uid string) (gfx.Slide, error) {
+	slide, err := gfx.NewSlideFromRemoteVideo(url, uid)
+
+	if err != nil {
+		return nil, err
+	}
+
+	s.slides = append(s.slides, slide)
+	return slide, nil
+}
+
 //LoadImageFromRemote take currentslide an load new image
 /*func (s *Slideshow) LoadImageFromRemote(url string) {
 	go func() {

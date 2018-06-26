@@ -29,6 +29,15 @@ func (d *Display) LoadVideo(path string, uid string) {
 
 }
 
+func (d *Display) LoadVideoAtRuntime(path, uid string) {
+	log.Println("Load a Video At Runtime:", uid)
+
+	_, err := d.slideshow.CreateNewSlideForVideoRemote(path, uid)
+	if err != nil {
+		log.Println("Error on Load Slide")
+	}
+}
+
 //CreateVideoSlide Creates an video slide
 /*func (d *Display) CreateVideoSlide(uid string) (*gfx.Slide, error) {
 	return d.slideshow.CreateNewSlideForVideoFrames(uid)

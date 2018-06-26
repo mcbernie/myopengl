@@ -87,20 +87,21 @@ func programLoop(window *glfw.Window) error {
 		display.LoadRemoteImage("http://wacogmbh.de:3999/index.php?m=fb&o=image&name=med_1275283013_60102000.jpg", "asduhfudh")
 	}()
 
-	go func() {
+	/*go func() {
 		time.Sleep(21 * time.Second)
 		log.Println("Now testing the removeing of an texture")
 		display.RemoveSlide("lkih76555")
-	}()
+	}()*/
 
-	go func() {
-		time.Sleep(40 * time.Second)
+	/*go func() {
+		time.Sleep(23 * time.Second)
 		log.Println("now begin loading 2. a video...")
-		display.LoadVideo("assets/video/tr5_event_bally.mp4", "tr5_bally_event")
-	}()
+		display.LoadVideoAtRuntime("assets/video/tr5_event_bally.mp4", "tr5_bally_event")
+	}()*/
 
-	display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
+	//display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
 
+	display.LoadVideo("assets/video/tr5_event_bally.mp4", "Big_Buck_Bunny")
 	defer display.Delete()
 
 	//gl.Enable(gl.DEPTH_TEST)

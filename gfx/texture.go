@@ -6,6 +6,7 @@ import (
 	"image/draw"
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
+	"log"
 
 	"github.com/mcbernie/myopengl/glHelper"
 )
@@ -76,12 +77,16 @@ func (tex *Texture) ReplaceImage(img image.Image) error {
 		return errUnsupportedStride
 	}
 
+	log.Println("img----->", img.Bounds())
+
 	rgba := image.NewRGBA(img.Bounds())
 
 	draw.Draw(rgba, rgba.Bounds(), img, image.Pt(0, 0), draw.Src)
 	if rgba.Stride != rgba.Rect.Size().X*4 {
 		return errUnsupportedStride
 	}
+
+	log.Println("RGBA----->", rgba.Stride, " rgba.Pix:", len(rgba.Pix))
 
 	internalFmt := int32(glHelper.GlSrgbAlpha)
 	format := uint32(glHelper.GlRgbA)
