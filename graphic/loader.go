@@ -3,25 +3,36 @@ package graphic
 import (
 	"io/ioutil"
 	"log"
-
-	"github.com/mcbernie/myopengl/gfx"
 )
 
 //LoadRemoteImage load an remote image for slideshow
 func (d *Display) LoadRemoteImage(path string, uid string) {
-	d.slideshow.CreateNewSlideFromRemote(path, uid)
+	d.slideshow.CreateNewSlideFromRemote(path, uid, 5.0)
 }
 
 //LoadLocalImage load an local image for slideshow
 func (d *Display) LoadLocalImage(path string, uid string) {
 	log.Println("LoadLocalImage:", uid)
-	d.slideshow.CreateNewSlideFromImageFile(path, uid)
+	d.slideshow.CreateNewSlideFromImageFile(path, uid, 5.0)
+}
+
+func (d *Display) LoadVideo(path string, uid string) {
+	log.Println("Load a Video:", uid)
+
+	slide, err := d.slideshow.CreateNewSlideForVideo(path, uid)
+	if err != nil {
+		log.Println("Error on Load Slide")
+	} else {
+		log.Println("Start Background Thread for ", uid)
+		slide.BackgroundThread()
+	}
+
 }
 
 //CreateVideoSlide Creates an video slide
-func (d *Display) CreateVideoSlide(uid string) (*gfx.Slide, error) {
+/*func (d *Display) CreateVideoSlide(uid string) (*gfx.Slide, error) {
 	return d.slideshow.CreateNewSlideForVideoFrames(uid)
-}
+}*/
 
 //LoadImagesFromPath load all images from a specified path and put it in slide array
 func (d *Display) LoadImagesFromPath(path string) {

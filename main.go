@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"runtime"
+	"time"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 
@@ -72,7 +73,7 @@ func programLoop(window *glfw.Window) error {
 		display.SetWindowSize(width, height)
 	})
 
-	/*go func() {
+	go func() {
 
 		time.Sleep(10 * time.Second)
 		log.Println("now begin loading a image...")
@@ -91,43 +92,8 @@ func programLoop(window *glfw.Window) error {
 		log.Println("Now testing the removeing of an texture")
 		display.RemoveSlide("lkih76555")
 	}()
-	*/
-	video, _ := display.CreateVideoSlide("TestVideo")
-	go func() {
 
-		v := gfx.CreateVideo("assets/video/big_buck_bunny.mp4")
-		//v := gfx.CreateVideo("assets/video/tests-sample.mp4")
-
-		//v := gfx.InitVideo()
-		//v := gfx.InitVideoFromFile()
-		defer v.CleanUP()
-
-		v.Play(video)
-
-		// wait for first frame...
-		/*img, err := v.GetFrame()
-		if err == nil {
-			log.Println(img.Bounds())
-			video.SetFrame(img)
-			for {
-				//time.Sleep(40 * time.Millisecond)
-				select {
-				case nextFrame := <-video.NextFrameChannel():
-					if nextFrame == true {
-
-						img, err := v.GetFrame()
-						if err == nil {
-							video.SetFrame(img)
-						}
-
-					}
-				default:
-				}
-
-			}
-		}*/
-
-	}()
+	display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
 
 	defer display.Delete()
 

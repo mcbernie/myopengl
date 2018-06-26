@@ -45,15 +45,6 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 		-0.4, 0.45, 0, //V2
 		-0.4, 0.5, 0, //V3
 	}
-
-	// Important->
-	/*
-		v0 oben links
-		v1 unten links
-		v2 unten rechts
-		v3 oben rechts
-	*/
-
 	indicies := []int32{
 		0, 1, 3, //Top Left triangle (V0, V1, V3)
 		3, 1, 2, //Bottom Right triangle (V3, V1, V2)
@@ -138,6 +129,6 @@ func (d *Display) Render(time float64) {
 //Delete unload all data from gpu
 func (d *Display) Delete() {
 	d.loader.CleanUP()
-	d.slideshow.Delete()
+	d.slideshow.CleanUP()
 
 }

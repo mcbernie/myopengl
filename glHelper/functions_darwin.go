@@ -3,7 +3,6 @@
 package glHelper
 
 import (
-	"log"
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
 )
@@ -12,9 +11,9 @@ import (
 func GenerateVertexArray(n int32) uint32 {
 	var vao uint32
 	gl.GenVertexArraysAPPLE(n, &vao)
-	if err := gl.GetError(); err != 0 {
+	/*if err := gl.GetError(); err != 0 {
 		log.Println("Error in GenVertexArrays!", err)
-	}
+	}*/
 
 	return vao
 }

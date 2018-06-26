@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
 )
 
 type loader struct {
@@ -16,8 +15,8 @@ type loader struct {
 }
 
 //CreateNewSlideFromImageFile create a new slide from a image
-func (s *Slideshow) CreateNewSlideFromImageFile(path string, name string) (*gfx.Slide, error) {
-	slide, err := gfx.NewSlideFromImageFile(path, name)
+func (s *Slideshow) CreateNewSlideFromImageFile(path string, name string, duration float64) (gfx.Slide, error) {
+	slide, err := gfx.NewSlideFromImageFile(path, name, duration)
 	if err != nil {
 		return nil, err
 	}
@@ -28,9 +27,8 @@ func (s *Slideshow) CreateNewSlideFromImageFile(path string, name string) (*gfx.
 }
 
 //CreateNewSlideFromRemote create a new slide from a image url
-func (s *Slideshow) CreateNewSlideFromRemote(url string, name string) (*gfx.Slide, error) {
-	log.Println("remote texture:", url)
-	slide, err := gfx.NewSlideFromRemoteImage(url, name)
+func (s *Slideshow) CreateNewSlideFromRemote(url string, name string, duration float64) (gfx.Slide, error) {
+	slide, err := gfx.NewSlideFromRemoteImage(url, name, duration)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +39,6 @@ func (s *Slideshow) CreateNewSlideFromRemote(url string, name string) (*gfx.Slid
 
 //AppendNewSlideFromRemote Add a new Slide to Slideshow
 func (s *Slideshow) AppendNewSlideFromRemote(url string, uid string) {
-
 	s.loaders = append(s.loaders, &loader{
 		uid:    uid,
 		path:   url,
@@ -49,16 +46,16 @@ func (s *Slideshow) AppendNewSlideFromRemote(url string, uid string) {
 	})
 }
 
-//CreateNewSlideForVideoFrames create a new Slide for Video frames...
-func (s *Slideshow) CreateNewSlideForVideoFrames(name string) (*gfx.Slide, error) {
-	slide := gfx.NewSlideForVideo(name)
+//CreateNewSlideForVideo create a new Slide for Video frames...
+func (s *Slideshow) CreateNewSlideForVideo(path, uid string) (gfx.Slide, error) {
+	slide := gfx.NewSlideForVideo(path, uid)
 	s.slides = append(s.slides, slide)
 	return slide, nil
 
 }
 
 //LoadImageFromRemote take currentslide an load new image
-func (s *Slideshow) LoadImageFromRemote(url string) {
+/*func (s *Slideshow) LoadImageFromRemote(url string) {
 	go func() {
 
 		update := s.currentSlide - 1
@@ -68,7 +65,7 @@ func (s *Slideshow) LoadImageFromRemote(url string) {
 
 		s.slides[update].LoadImageFromRemote(url)
 	}()
-}
+}*/
 
 //LoadTransitions load all transitions with .glsl file extension from an specified path
 func (s *Slideshow) LoadTransitions(path string, projection [16]float32) {
@@ -89,12 +86,7 @@ func (s *Slideshow) LoadTransitions(path string, projection [16]float32) {
 func (s *Slideshow) RemoveSlide(uid string) {
 	for i, slide := range s.slides {
 		if slide.GetUid() == uid {
-
-			texHandle := slide.Tex.GetHandle()
-			glHelper.AddFunction(func() {
-				glHelper.DeleteTextures(1, &texHandle)
-			})
-
+			slide.Delete()
 			newslides := append(s.slides[:i], s.slides[i+1:]...)
 
 			s.slides = newslides

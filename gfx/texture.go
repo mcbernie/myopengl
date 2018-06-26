@@ -71,8 +71,7 @@ func (tex *Texture) SetDefaultImage(img image.Image) error {
 	return tex.SetImage(img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
 }
 
-//SetImage is for setting or replacing a image
-func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
+func (tex *Texture) ReplaceImage(img image.Image) error {
 	if img == nil {
 		return errUnsupportedStride
 	}
@@ -93,21 +92,31 @@ func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
 
 	tex.width = width
 	tex.height = height
+	tex.Bind(tex.unit)
+	glHelper.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
+
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinear)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureMagFilter, glHelper.GlLinear)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinearMipmapLinear)
+	glHelper.TexParameteri(tex.target, glHelper.GlTextureLodBias, 0)
+	tex.UnBind()
+	return nil
+
+}
+
+//SetImage is for setting or replacing a image
+func (tex *Texture) SetImage(img image.Image, wrapR, wrapS int32) error {
+
+	if err := tex.ReplaceImage(img); err != nil {
+		return err
+	}
 
 	tex.Bind(tex.unit)
-	defer tex.UnBind()
 
 	glHelper.TexParameteri(tex.target, glHelper.GlTextureWrapR, wrapR)
 	glHelper.TexParameteri(tex.target, glHelper.GlTextureWrapS, wrapS)
-	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinear)
-	glHelper.TexParameteri(tex.target, glHelper.GlTextureMagFilter, glHelper.GlLinear)
-
-	glHelper.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
-
-	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinearMipmapLinear)
-	glHelper.TexParameteri(tex.target, glHelper.GlTextureLodBias, 0)
 	glHelper.GenerateMipmap(tex.target)
-
+	tex.UnBind()
 	return nil
 }
 

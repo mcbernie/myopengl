@@ -22,6 +22,9 @@ type Video struct {
 	decCodec  *gmf.CodecCtx
 	decFrame  *gmf.Frame
 	swsCtx    *gmf.SwsCtx
+
+	//SlideShow
+	slide *VideoSlide
 }
 
 func (v *Video) CleanUP() {
@@ -43,10 +46,12 @@ func (v *Video) CleanUP() {
 	}
 }
 
-func CreateVideo(srcFileName string) *Video {
+func CreateVideo(srcFileName string, slide *VideoSlide) *Video {
 	var err error
 
-	v := &Video{}
+	v := &Video{
+		slide: slide,
+	}
 
 	//Load Input file and put in AVFormatContext
 	v.decFmt, err = gmf.NewInputCtx(srcFileName)
@@ -56,12 +61,6 @@ func CreateVideo(srcFileName string) *Video {
 		log.Println("Couldn't find stream information ", err)
 		return nil
 	}
-	//v.decFmt.DumpAv()
-
-	/*codec, err := gmf.FindDecoder(v.decStream.CodecCtx().Id())
-	if err != nil {
-		log.Println("Unsupported Codec:", err)
-	}*/
 
 	codec, err := gmf.FindEncoder(gmf.AV_CODEC_ID_RAWVIDEO)
 	if err != nil {
@@ -96,10 +95,35 @@ func CreateVideo(srcFileName string) *Video {
 		log.Fatal("ImgAlloc: ", err)
 	}
 
+	/*duration := v.decFmt.Duration() / 10000
+
+	log.Println("duration:", duration/60)
+	slide.SetDelay(float64(duration) / 60.0)*/
+
 	return v
 }
 
-func (v *Video) Play(s *Slide) {
+func (v *Video) LoopPlay() {
+	v.Play()
+
+	//send to channel finishedVideo!!
+	v.slide.finishedVideo <- true
+
+	// frame seeking only after 1/2 sec
+	time.Sleep(500 * time.Millisecond)
+
+	r := gmf.RescaleQ(0, gmf.AV_TIME_BASE_Q, v.decStream.TimeBase())
+	err := v.decFmt.SeekFrameAt(r, v.decStream.Index())
+	if err != nil {
+		log.Println("error seeking!", err)
+		panic("error seeking")
+	} else {
+		log.Println("Replay...")
+		v.LoopPlay()
+	}
+}
+
+func (v *Video) Play() {
 
 	log.Println("Start video playing->")
 	for packet := range v.decFmt.GetNewPackets() {
@@ -124,10 +148,10 @@ func (v *Video) Play(s *Slide) {
 				img.Stride = 4 * width // 4 bytes per pixel (RGBA), width times per row
 				img.Rect = image.Rect(0, 0, width, height)
 				time.Sleep(30 * time.Millisecond)
-				s.imageMux.Lock()
-				s.img = img
-				s.imageMux.Unlock()
-				s.gotNewFrame <- true
+				v.slide.imageMux.Lock()
+				v.slide.img = img
+				v.slide.imageMux.Unlock()
+				v.slide.gotNewFrame <- true
 
 				defer gmf.Release(p)
 			} else if err != nil {
@@ -142,15 +166,7 @@ func (v *Video) Play(s *Slide) {
 	}
 
 	log.Println("playing video is finished!.. simple try restart...")
-	r := gmf.RescaleQ(0, gmf.AV_TIME_BASE_Q, v.decStream.TimeBase())
 
-	err := v.decFmt.SeekFrameAt(r, v.decStream.Index())
-	if err != nil {
-		log.Println("error seeking!", err)
-		panic("error seeking")
-	} else {
-		v.Play(s)
-	}
 }
 
 func (v *Video) alloc() error {

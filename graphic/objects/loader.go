@@ -3,6 +3,7 @@ package objects
 import (
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
+
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
@@ -42,6 +43,8 @@ func (l *Loader) LoadToVAO(positions []float32, indicies []int32) *RawModel {
 }
 
 func (l *Loader) createVAO() uint32 {
+	//log.Println("createVAO??")
+	//debug.PrintStack()
 	vao := glHelper.GenerateVertexArray(1)
 	l.vaos = append(l.vaos, vao)
 	glHelper.BindVertexArray(vao)

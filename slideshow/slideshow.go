@@ -1,6 +1,7 @@
 package slideshow
 
 import (
+	"log"
 	"math"
 	"math/rand"
 
@@ -16,7 +17,7 @@ type Slideshow struct {
 
 	loaders []*loader
 
-	slides      []*gfx.Slide
+	slides      []gfx.Slide
 	transitions []*gfx.Transition
 	box         []float32
 
@@ -28,9 +29,9 @@ type Slideshow struct {
 	currentTransition int
 	nextTransition    int
 
-	delay    float64
-	duration float64
-
+	delay        float64
+	duration     float64
+	defaultDelay float64
 	/*windowWidth  float32
 	windowHeight float32*/
 }
@@ -61,47 +62,91 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 		currentSlide:      0,
 		nextSlide:         1,
 
-		delay:    defaultDelay,
-		duration: defaultDuration,
+		delay:        defaultDelay,
+		duration:     defaultDuration,
+		defaultDelay: defaultDelay,
 	}
 
 	return s
 }
 
+var previousTime float64
+var progress float64
+var index int
+var currentDuration float64
+var pause bool
+var delayForTransition float64
+
+var from, to gfx.Slide
+var transition *gfx.Transition
+var transitionId int
+
 //Render Render the transitions
 func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
-	index := s.index(time)
-
+	delayForTransition = 5.0
 	aviableSlides := s.onlyAviableSlides()
 
-	if index != s.currentIndex {
-		s.currentIndex = index
-		s.currentTransition = rand.Intn(len(s.transitions))
-		//log.Println("current transition:", d.transitions[d.currentTransition].Name)
+	durationBetweenFrames := time - previousTime
+	previousTime = time
+
+	currentDuration += durationBetweenFrames
+	if pause == false {
+		//Animationsschleife
+
+		progress = currentDuration / s.duration
+
+		if progress >= 1 {
+			// animation ist abgeschlossen jetzt gilt der delay!
+			progress = 0.0      // Progress zurücksetzen
+			currentDuration = 0 // dauer zurücksetzen
+
+			index++ // index einen aufzählen
+			//überlaufschutz für den index. es kann keinen höheren index als verfügbare slides geben
+			if index > len(aviableSlides)-1 {
+				index = 0
+			}
+			log.Println("currentSlide:", index)
+			s.currentSlide = index
+			s.nextSlide = (index + 1) % (len(aviableSlides))
+			pause = true // pause aktivieren
+
+			log.Println("in pause mode, currently shows:", to.GetUid())
+
+		}
+
+	} else {
+		//Delay checker
+		if from.GoToNextSlide(currentDuration) == true {
+			log.Println(" from:", from.GetUid(), " to:", to.GetUid(), " duration:", currentDuration)
+			pause = false       // delay ist abgelaufen, pause beenden
+			currentDuration = 0 // dauer zurücksetzen
+			transitionId = rand.Intn(len(s.transitions))
+		} else {
+			from.Play()
+		}
 	}
 
-	s.currentSlide = index % (len(aviableSlides))
-	s.nextSlide = (index + 1) % (len(aviableSlides))
-
-	from := aviableSlides[s.currentSlide]
-	to := aviableSlides[s.nextSlide]
+	transition = s.transitions[transitionId]
+	from = aviableSlides[s.currentSlide]
+	to = aviableSlides[s.nextSlide]
 
 	for _, slide := range s.slides {
 		slide.Update()
 	}
 
-	currentProgress := s.progress(time)
-	transition := s.transitions[s.currentTransition]
+	to.Play()
 
-	transition.Draw(currentProgress, from.Draw(time, currentProgress), to.Draw(time, currentProgress))
+	transition.Draw(float32(progress),
+		from.Display(),
+		to.Display())
 
 	//begin render Entity after all shader processing is done!
 	renderer.RenderEntity(s.SlideShowEntity, transition.Shader)
 }
 
-func (s *Slideshow) onlyAviableSlides() []*gfx.Slide {
+func (s *Slideshow) onlyAviableSlides() []gfx.Slide {
 
-	r := make([]*gfx.Slide, 0)
+	r := make([]gfx.Slide, 0)
 	for _, s := range s.slides {
 		if !s.IsLoading() {
 			r = append(r, s)
@@ -115,6 +160,21 @@ func (s *Slideshow) total() float64 {
 	return s.delay + s.duration
 }
 
+// bei jedem update schauen...
+/*
+progress geht von 0.0 bis 1.0
+
+zeit -
+zeit / delay + duration
+*
+delay + duration
+
+- delay
+/ duration
+
+
+*/
+
 func (s *Slideshow) progress(time float64) float32 {
 	return float32(math.Max(0, (time-float64(s.index(time))*s.total()-s.delay)/s.duration))
 }
@@ -123,15 +183,15 @@ func (s *Slideshow) index(time float64) int {
 	return int(math.Floor(time / (s.delay + s.duration)))
 }
 
-//Delete remove all transitions and all slides from memory
-func (s *Slideshow) Delete() {
+//CleanUP remove all transitions and all slides from memory
+func (s *Slideshow) CleanUP() {
 
 	for _, transition := range s.transitions {
-		transition.Delete()
+		transition.CleanUP()
 	}
 
 	for _, slide := range s.slides {
-		slide.Delete()
+		slide.CleanUP()
 	}
 
 }

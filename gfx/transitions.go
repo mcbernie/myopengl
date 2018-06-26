@@ -154,6 +154,6 @@ func (transition *Transition) Draw(progress float32, from *Texture, to *Texture 
 }
 
 //Delete remove shader program from memory
-func (transition *Transition) Delete() {
+func (transition *Transition) CleanUP() {
 	transition.Shader.Delete()
 }
