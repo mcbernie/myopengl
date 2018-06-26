@@ -117,16 +117,12 @@ func (v *Video) LoopPlay() {
 	err := v.decFmt.SeekFrameAt(r, v.decStream.Index())
 	if err != nil {
 		log.Println("error seeking!", err)
-		panic("error seeking")
 	} else {
-		log.Println("Replay...")
 		v.LoopPlay()
 	}
 }
 
 func (v *Video) Play() {
-
-	log.Println("Start video playing->")
 	for packet := range v.decFmt.GetNewPackets() {
 		if packet.StreamIndex() != v.decStream.Index() {
 			continue
@@ -144,14 +140,17 @@ func (v *Video) Play() {
 			if p, err := v.decFrame.Encode(v.decCodec); p != nil {
 
 				width, height := frame.Width(), frame.Height()
-				width = 1920
-				height = 1080
+				if width == 0 {
+					//log.Println("width is zero")
+					width = 1920
+					height = 1080
+				}
+
 				img := new(image.RGBA)
 				img.Pix = p.Data()
 				img.Stride = 4 * width // 4 bytes per pixel (RGBA), width times per row
 				img.Rect = image.Rect(0, 0, width, height)
 				time.Sleep(30 * time.Millisecond)
-				log.Println("Image len:", len(img.Pix), " imgBoumds:", img.Bounds(), " w:", width, " h:", height)
 				v.slide.imageMux.Lock()
 				v.slide.img = img
 				v.slide.imageMux.Unlock()
@@ -160,7 +159,6 @@ func (v *Video) Play() {
 				defer gmf.Release(p)
 			} else if err != nil {
 				log.Println("error decoding frame:", err)
-				panic("FEHLER")
 			}
 
 		}
@@ -168,9 +166,6 @@ func (v *Video) Play() {
 		gmf.Release(packet)
 
 	}
-
-	log.Println("playing video is finished!.. simple try restart...")
-
 }
 
 func (v *Video) alloc() error {

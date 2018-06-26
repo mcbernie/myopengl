@@ -93,15 +93,15 @@ func programLoop(window *glfw.Window) error {
 		display.RemoveSlide("lkih76555")
 	}()*/
 
-	/*go func() {
+	go func() {
 		time.Sleep(23 * time.Second)
 		log.Println("now begin loading 2. a video...")
-		display.LoadVideoAtRuntime("assets/video/tr5_event_bally.mp4", "tr5_bally_event")
-	}()*/
+		display.LoadVideoAtRuntime("assets/video/tr5_event_bally.mp4", "tr5_bally_event", 10)
+	}()
 
 	//display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
 
-	display.LoadVideo("assets/video/tr5_event_bally.mp4", "Big_Buck_Bunny")
+	//display.LoadVideo("assets/video/tr5_event_bally.mp4", "Big_Buck_Bunny")
 	defer display.Delete()
 
 	//gl.Enable(gl.DEPTH_TEST)

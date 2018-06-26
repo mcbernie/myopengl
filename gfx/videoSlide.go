@@ -36,13 +36,14 @@ func NewSlideForVideo(path, uid string) *VideoSlide {
 }
 
 //NewSlideFromRemoteVideo Create a slide from remote Video
-func NewSlideFromRemoteVideo(url string, uid string) (*VideoSlide, error) {
+func NewSlideFromRemoteVideo(url string, uid string, withDuration float64) (*VideoSlide, error) {
 
 	ret := make(chan *VideoSlide)
 	glHelper.AddFunction(func() {
 		ret <- createVideoSlide(uid)
 	})
 	s := <-ret
+	s.delay = withDuration
 	s.video = CreateVideo(url, s)
 	s.BackgroundThread()
 
@@ -57,24 +58,30 @@ func (s *VideoSlide) BackgroundThread() {
 }
 
 func (s *VideoSlide) Play() {
-	if s.IsVideo {
-		select {
-		case newFrame := <-s.gotNewFrame:
-			if newFrame == true {
-				s.Tex.SetDefaultImage(s.img)
-			}
-		default:
+
+	select {
+	case newFrame := <-s.gotNewFrame:
+		if newFrame == true {
+			s.Tex.SetDefaultImage(s.img)
 		}
+	default:
 	}
 }
 
 func (s *VideoSlide) GoToNextSlide(currentDuration float64) bool {
-	select {
-	case stop := <-s.finishedVideo:
-		if stop == true {
+
+	if s.delay > 0 {
+		if currentDuration >= s.delay {
 			return true
 		}
-	default:
+	} else {
+		select {
+		case stop := <-s.finishedVideo:
+			if stop == true {
+				return true
+			}
+		default:
+		}
 	}
 
 	return false

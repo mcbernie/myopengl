@@ -55,8 +55,8 @@ func (s *Slideshow) CreateNewSlideForVideo(path, uid string) (gfx.Slide, error) 
 }
 
 //CreateNewSlideForVideoRemote create a new slide from a image url
-func (s *Slideshow) CreateNewSlideForVideoRemote(url, uid string) (gfx.Slide, error) {
-	slide, err := gfx.NewSlideFromRemoteVideo(url, uid)
+func (s *Slideshow) CreateNewSlideForVideoRemote(url, uid string, withDuration float64) (gfx.Slide, error) {
+	slide, err := gfx.NewSlideFromRemoteVideo(url, uid, withDuration)
 
 	if err != nil {
 		return nil, err

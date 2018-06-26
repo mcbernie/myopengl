@@ -2,7 +2,6 @@ package slideshow
 
 import (
 	"log"
-	"math"
 	"math/rand"
 
 	"github.com/go-gl/mathgl/mgl32"
@@ -23,8 +22,8 @@ type Slideshow struct {
 
 	currentIndex int
 
-	currentSlide int
-	nextSlide    int
+	currentSlide string
+	nextSlide    string
 
 	currentTransition int
 	nextTransition    int
@@ -59,8 +58,8 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 
 		currentIndex:      0,
 		currentTransition: 0,
-		currentSlide:      0,
-		nextSlide:         1,
+		currentSlide:      "",
+		nextSlide:         "",
 
 		delay:        defaultDelay,
 		duration:     defaultDuration,
@@ -72,7 +71,8 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 
 var previousTime float64
 var progress float64
-var index int
+
+//var index int
 var currentDuration float64
 var pause bool
 var delayForTransition float64
@@ -92,7 +92,6 @@ func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 	currentDuration += durationBetweenFrames
 	if pause == false {
 		//Animationsschleife
-
 		progress = currentDuration / s.duration
 
 		if progress >= 1 {
@@ -100,18 +99,10 @@ func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 			progress = 0.0      // Progress zurücksetzen
 			currentDuration = 0 // dauer zurücksetzen
 
-			index++ // index einen aufzählen
-			//überlaufschutz für den index. es kann keinen höheren index als verfügbare slides geben
-			if index > len(aviableSlides)-1 {
-				index = 0
-			}
-			log.Println("currentSlide:", index)
-			s.currentSlide = index
-			s.nextSlide = (index + 1) % (len(aviableSlides))
 			pause = true // pause aktivieren
 
 			log.Println("in pause mode, currently shows:", to.GetUid())
-
+			s.setIndexSlides(len(aviableSlides))
 		}
 
 	} else {
@@ -127,8 +118,8 @@ func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 	}
 
 	transition = s.transitions[transitionId]
-	from = aviableSlides[s.currentSlide]
-	to = aviableSlides[s.nextSlide]
+
+	from, to = s.getFromAndTo()
 
 	for _, slide := range s.slides {
 		slide.Update()
@@ -144,6 +135,55 @@ func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
 	renderer.RenderEntity(s.SlideShowEntity, transition.Shader)
 }
 
+var lastIndex int
+
+func (s *Slideshow) setIndexSlides(aviableSlides int) {
+	s.currentSlide = s.nextSlide
+	current, _ := getSlideByUID(s.slides, s.currentSlide)
+
+	next := current + 1
+
+	if next >= aviableSlides {
+		log.Println("Überlaufschutz....")
+		next = 0
+	}
+
+	s.nextSlide = s.slides[next].GetUid()
+
+}
+
+func (s *Slideshow) getFromAndTo() (gfx.Slide, gfx.Slide) {
+
+	idFrom, from := getSlideByUID(s.slides, s.currentSlide)
+	if idFrom == -1 {
+		//from not found use index zero!
+		from = s.slides[0]
+		idFrom = 0
+		s.currentSlide = from.GetUid()
+	}
+
+	idTo, to := getSlideByUID(s.slides, s.nextSlide)
+	if idTo == -1 {
+		to = s.slides[idFrom+1]
+		idTo = idFrom + 1
+		s.nextSlide = to.GetUid()
+	}
+
+	return from, to
+}
+
+func getSlideByUID(slides []gfx.Slide, uid string) (int, gfx.Slide) {
+
+	for i, s := range slides {
+		if s.GetUid() == uid {
+			return i, s
+		}
+	}
+
+	return -1, nil
+
+}
+
 func (s *Slideshow) onlyAviableSlides() []gfx.Slide {
 
 	r := make([]gfx.Slide, 0)
@@ -154,33 +194,6 @@ func (s *Slideshow) onlyAviableSlides() []gfx.Slide {
 	}
 
 	return r
-}
-
-func (s *Slideshow) total() float64 {
-	return s.delay + s.duration
-}
-
-// bei jedem update schauen...
-/*
-progress geht von 0.0 bis 1.0
-
-zeit -
-zeit / delay + duration
-*
-delay + duration
-
-- delay
-/ duration
-
-
-*/
-
-func (s *Slideshow) progress(time float64) float32 {
-	return float32(math.Max(0, (time-float64(s.index(time))*s.total()-s.delay)/s.duration))
-}
-
-func (s *Slideshow) index(time float64) int {
-	return int(math.Floor(time / (s.delay + s.duration)))
 }
 
 //CleanUP remove all transitions and all slides from memory

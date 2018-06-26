@@ -29,10 +29,10 @@ func (d *Display) LoadVideo(path string, uid string) {
 
 }
 
-func (d *Display) LoadVideoAtRuntime(path, uid string) {
+func (d *Display) LoadVideoAtRuntime(path, uid string, withDuration float64) {
 	log.Println("Load a Video At Runtime:", uid)
 
-	_, err := d.slideshow.CreateNewSlideForVideoRemote(path, uid)
+	_, err := d.slideshow.CreateNewSlideForVideoRemote(path, uid, withDuration)
 	if err != nil {
 		log.Println("Error on Load Slide")
 	}
