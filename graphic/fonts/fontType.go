@@ -3,6 +3,7 @@ package fonts
 type FontType struct {
 	textureAtlas uint32
 	loader       *textMeshCreator
+	fontFile     string
 }
 
 /**
@@ -25,7 +26,18 @@ func MakeFontType(textureAtlas uint32, fontFile string) *FontType {
 	return &FontType{
 		textureAtlas: textureAtlas,
 		loader:       loader,
+		fontFile:     fontFile,
 	}
+}
+
+func (f *FontType) ReplaceMeshCreator() {
+	loader, err := makeTextMeshCreator(f.fontFile)
+
+	if err != nil {
+		panic("Error on create MeshCreator")
+	}
+
+	f.loader = loader
 }
 
 func (f *FontType) loadText(text *GUIText) *textMeshData {

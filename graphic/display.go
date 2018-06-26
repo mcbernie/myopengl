@@ -57,6 +57,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	// --->>>
 	fonts.InitTextMaster(d.loader)
 	d.font = fonts.MakeFontType(d.loader.LoadTexture("assets/fonts/verdana.png"), "assets/fonts/verdana.fnt")
+
 	/*text := fonts.CreateGuiText("", 1, d.font, [2]float32{0.0, 0.0}, 4, false)
 	text.SetColour(1.0, 1.0, 1)
 	d.fpsText = text*/
@@ -78,6 +79,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 func (d *Display) SetWindowSize(width, height int) {
 	d.windowWidth = float32(width)
 	d.windowHeight = float32(height)
+	d.font.ReplaceMeshCreator()
 }
 
 var elapsed float64
