@@ -93,6 +93,12 @@ func programLoop(window *glfw.Window) error {
 		display.RemoveSlide("lkih76555")
 	}()
 
+	go func() {
+		time.Sleep(40 * time.Second)
+		log.Println("now begin loading 2. a video...")
+		display.LoadVideo("assets/video/tr5_event_bally.mp4", "tr5_bally_event")
+	}()
+
 	display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
 
 	defer display.Delete()
