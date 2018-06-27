@@ -2,9 +2,12 @@ package graphic
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/glHelper"
 	"github.com/mcbernie/myopengl/graphic/fonts"
 	"github.com/mcbernie/myopengl/graphic/objects"
 	"github.com/mcbernie/myopengl/slideshow"
@@ -18,13 +21,20 @@ type Display struct {
 	defaultShader *gfx.Program
 	slideshow     *slideshow.Slideshow
 
-	renderer *objects.Renderer
-	loader   *objects.Loader
-	rawModel *objects.RawModel
-	entity   *objects.Entity
-	fpsText  *fonts.GUIText
-	font     *fonts.FontType
+	renderer    *objects.Renderer
+	loader      *objects.Loader
+	rawModel    *objects.RawModel
+	entity      *objects.Entity
+	fpsText     *fonts.GUIText
+	font        *fonts.FontType
+	laufschrift *fonts.GUIText
 }
+
+var rendTexture uint32
+var rendFrameBuff uint32
+var laufschriftModel *objects.RawModel
+var laufschriftEntity *objects.Entity
+var lShader *gfx.Program
 
 //InitDisplay initialize a Display object
 func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuration float64) *Display {
@@ -36,6 +46,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
 
+	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
 	/**
 		My Testing Area
 	**/
@@ -51,10 +62,24 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	}
 
 	rawModel := d.loader.LoadToVAO(vertices, indicies)
-
 	d.entity = objects.MakeEntity(rawModel, mgl32.Vec3{0, 0, -1.0}, 0, 0, 0, 1.0)
 
+	// Simple QUAD <--> for laufschrift
+	simpleQuad := []float32{
+		-1.0, 1.0, -0.1, //V0
+		-1.0, -1.0, -0.1, //V1
+		1.0, -1.0, -0.1, //V2
+		1.0, 1.0, -0.1, //V3
+	}
+	simpleIndicies := []int32{
+		0, 1, 3, //Top Left triangle (V0, V1, V3)
+		3, 1, 2, //Bottom Right triangle (V3, V1, V2)
+	}
+	laufschriftModel = d.loader.LoadToVAO(simpleQuad, simpleIndicies)
+	laufschriftEntity = objects.MakeEntity(laufschriftModel, mgl32.Vec3{0, 0, -1.0}, 0, 0, 0, 1.0)
+
 	// --->>>
+
 	fonts.InitTextMaster(d.loader)
 	d.font = fonts.MakeFontType(d.loader.LoadTexture("assets/fonts/verdana.png"), "assets/fonts/verdana.fnt")
 
@@ -68,10 +93,42 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 		End of My Testing Area
 	**/
 
+	//laufschrift test..
+	d.laufschrift = fonts.CreateGuiText("Hallo I'bims 1 Laufschrift mit ganz viel Text!", 3, d.font, [2]float32{0.0, 0.9}, 4, false)
+	d.laufschrift.SetColour(1, 1, 1)
+
 	// SlideShowSpecific
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.loader)
 	d.slideshow.LoadTransitions("./assets/transitions", d.renderer.GetProjection())
 	elapsed = 0.0
+
+	gl.GenFramebuffers(1, &rendFrameBuff)
+	gl.BindTexture(gl.FRAMEBUFFER, rendFrameBuff)
+
+	gl.GenTextures(1, &rendTexture)
+	gl.BindTexture(gl.TEXTURE_2D, rendTexture)
+
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, int32(d.windowWidth), int32(d.windowHeight), 0, gl.RGB, gl.UNSIGNED_BYTE, gl.PtrOffset(0))
+
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+
+	gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, rendTexture, 0)
+
+	gl.DrawBuffer(gl.COLOR_ATTACHMENT0)
+
+	var err error
+	lShader, err = createLaufschriftShader()
+	if err != nil {
+		log.Println("create Laufschrift shader error:", err)
+	}
+
+	lShader.Use()
+	lShader.AddUniform("projectionMatrix")
+	glHelper.UniformMatrix4(lShader.GetUniform("projectionMatrix"), d.renderer.GetProjection())
+	lShader.UnUse()
+	/*dbuffers :=
+	gl.drawbu*/
 	return d
 }
 
@@ -79,6 +136,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 func (d *Display) SetWindowSize(width, height int) {
 	d.windowWidth = float32(width)
 	d.windowHeight = float32(height)
+
 	d.font.ReplaceMeshCreator()
 }
 
@@ -110,21 +168,32 @@ func (d *Display) Render(time float64) {
 		lastTime = time
 	}
 
+	gl.BindFramebuffer(gl.FRAMEBUFFER, rendFrameBuff)
+	gl.Viewport(0, 0, int32(d.windowWidth), int32(d.windowHeight))
+	fonts.TextMaster.Render()
+	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
+
 	//d.entity.IncreasePosition(0.09*duration, -0.02*duration, 0)
 	//d.slideshow.SlideShowEntity.IncreasePosition(0.05*duration, -0.02*duration, 0)
 
 	d.slideshow.Render(time, d.renderer)
 
-	d.renderer.UseDefaultShader()
+	//d.renderer.UseDefaultShader()
 
-	d.renderer.RenderEntity(d.entity, d.renderer.Shader)
+	//d.renderer.RenderEntity(d.entity, d.renderer.Shader)
 
+	/*lShader.Use()
+	//d.renderer.UseDefaultShader()
+	glHelper.BindTexture(gl.TEXTURE_2D, rendTexture)
+	glHelper.Uniform1i(lShader.GetUniform("renderedTexture"), 0)
+	glHelper.Uniform1f(lShader.GetUniform("time"), float32(time))
+	d.renderer.RenderEntity(laufschriftEntity, lShader)
+	lShader.UnUse()
+	glHelper.BindTexture(gl.TEXTURE_2D, 0)*/
 	/*gl.Disable(gl.DEPTH_TEST)
 	glHelper.UseProgram(0)
 	gl.Color4f(1.0, 1.0, 1.0, 0.9)
 	d.fonts[10].Printf(0, 0, "Hallo Test")*/
-
-	fonts.TextMaster.Render()
 
 }
 
@@ -133,4 +202,32 @@ func (d *Display) Delete() {
 	d.loader.CleanUP()
 	d.slideshow.CleanUP()
 
+}
+
+func createLaufschriftShader() (*gfx.Program, error) {
+	vert, err := gfx.NewShaderFromFile("assets/shaders/laufschrift.vert", gfx.VertexShaderType)
+	if err != nil {
+		return nil, err
+	}
+
+	frag, err := gfx.NewShaderFromFile("assets/shaders/laufschrift.frag", gfx.FragmentShaderType)
+	if err != nil {
+		return nil, err
+	}
+
+	shader, err := gfx.NewProgram(vert, frag)
+
+	if err != nil {
+		return nil, err
+	}
+
+	shader.Use()
+	shader.AddUniform("renderedTexture")
+	shader.AddUniform("projectionMatrix")
+	shader.AddUniform("transformationMatrix")
+	shader.AddUniform("time")
+	shader.BindAttribute(0, "position")
+	shader.UnUse()
+
+	return shader, nil
 }
