@@ -1,6 +1,7 @@
 package fonts
 
 import (
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
@@ -27,6 +28,8 @@ func CreateFontShader() *FontShader {
 		panic("Program Error:" + err.Error())
 	}
 
+	projectionMatrix := mgl32.Ortho2D(-1, 1, -1, 1)
+
 	//Put the ShaderProgram to Abstraction of Program -> FontShader
 	f := &FontShader{program}
 
@@ -34,6 +37,9 @@ func CreateFontShader() *FontShader {
 	f.AddUniform("fontAtlas")
 	f.AddUniform("colour")
 	f.AddUniform("translation")
+
+	f.AddUniform("projectionMatrix")
+	glHelper.UniformMatrix4(f.GetUniform("projectionMatrix"), projectionMatrix)
 
 	f.BindAttribute(0, "position")
 	f.BindAttribute(1, "textureCoords")
@@ -48,5 +54,5 @@ func (f *FontShader) SetColur(colour [3]float32) {
 }
 
 func (f *FontShader) SetTranslation(translation [2]float32) {
-	glHelper.Uniform2f(f.GetUniform("translation"), translation[0], translation[1])
+	glHelper.Uniform2f(f.GetUniform("translation"), translation[0]+1.0, translation[1]-1.0)
 }

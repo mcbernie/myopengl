@@ -1,5 +1,7 @@
 package fonts
 
+import "log"
+
 type GUIText struct {
 	textString string
 	fontSize   float32
@@ -9,6 +11,7 @@ type GUIText struct {
 	colour      [3]float32
 
 	position      [2]float32
+	bottomRight   [2]float32
 	lineMaxSize   float32
 	numberOfLines int32
 
@@ -26,14 +29,25 @@ func CreateGuiText(text string, fontSize float32, font *FontType, position [2]fl
 		font:        font,
 		position:    position,
 		lineMaxSize: maxLineLength,
-		centerText:  centered,
-		colour:      [3]float32{0.0, 0.0, 0.0},
+
+		centerText: centered,
+		colour:     [3]float32{0.0, 0.0, 0.0},
 	}
 
 	TextMaster.LoadText(g)
 
 	return g
 
+}
+
+func (g *GUIText) GetSize() [2]float32 {
+
+	log.Println("bottomRight:", g.bottomRight)
+	log.Println("position:", g.position)
+	x := g.bottomRight[0] - g.position[0]
+	y := g.bottomRight[1] - g.position[1]
+
+	return [2]float32{x, y}
 }
 
 func (g *GUIText) SetNumberOfLines(number int32) {
@@ -76,4 +90,8 @@ func (g *GUIText) getMesh() uint32 {
 func (g *GUIText) setMeshInfo(vao uint32, verticesCount int32) {
 	g.textMeshVao = vao
 	g.vertexCount = verticesCount
+}
+
+func (g *GUIText) GetlineMaxSize() float32 {
+	return g.lineMaxSize
 }

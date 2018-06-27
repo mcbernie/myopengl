@@ -22,6 +22,11 @@ func (l *line) attemptToAddWord(w *word) bool {
 		additionalLength += l.spaceSize
 	}
 
+	if l.maxLength == -1 {
+		l.words = append(l.words, w)
+		return true
+	}
+
 	if l.currentLineLength+additionalLength <= l.maxLength {
 		l.words = append(l.words, w)
 		return true

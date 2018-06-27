@@ -42,6 +42,17 @@ func (l *Loader) LoadToVAO(positions []float32, indicies []int32) *RawModel {
 	return CreateRawModel(vao, len(indicies))
 }
 
+//LoadToVAOWithTexCoords returns an RawModel and creates an VAO and save handler in Loader struct
+func (l *Loader) LoadToVAOWithTexCoords(positions []float32, indicies []int32, texCoords []float32) *RawModel {
+	vao := l.createVAO()
+	l.bindIndiciesBuffer(indicies)
+	l.storeDataInAttributeList(0, 3, positions)
+	l.storeDataInAttributeList(1, 2, texCoords)
+	l.unbindVAO()
+
+	return CreateRawModel(vao, len(indicies))
+}
+
 func (l *Loader) createVAO() uint32 {
 	//log.Println("createVAO??")
 	//debug.PrintStack()

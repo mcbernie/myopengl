@@ -11,6 +11,7 @@ type fontRenderer struct {
 func createFontRenderer() *fontRenderer {
 	shader := CreateFontShader()
 	//
+
 	return &fontRenderer{
 		shader: shader,
 	}

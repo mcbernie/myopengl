@@ -29,8 +29,30 @@ func (t *textMaster) LoadText(text *GUIText) {
 	font := text.font
 	data := font.loadText(text)
 
-	vao := t.loader.LoadVertexAndTextureToVAO(data.vertexPositions, data.textureCoords)
+	//find highest X
+	//find highest Y
+	//x = von links -1 bis recht 1
+	//y = von oben +1 bis unten -1
+	var xh float32
+	var yh float32
 
+	for i, d := range data.vertexPositions {
+		xy := d
+		switch i % 3 {
+		case 0: //X
+			if xh < xy {
+				xh = xy
+			}
+		case 1: //Y
+			if yh > xy {
+				yh = xy
+			}
+		default:
+		}
+	}
+	text.bottomRight = [2]float32{xh, yh}
+
+	vao := t.loader.LoadVertexAndTextureToVAO(data.vertexPositions, data.textureCoords)
 	text.setMeshInfo(vao, data.getVertexCount())
 
 	if t.texts[font] == nil {

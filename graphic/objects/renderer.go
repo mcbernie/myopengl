@@ -62,6 +62,7 @@ func (r *Renderer) Render(model *RawModel) {
 func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
 	glHelper.BindVertexArray(e.Model.GetVao())
 	gl.EnableVertexAttribArray(0)
+	gl.EnableVertexAttribArray(1)
 
 	rotMatrix := mgl32.HomogRotate3DX(e.Rx)
 	rotMatrix = rotMatrix.Mul4(mgl32.HomogRotate3DY(e.Ry))
@@ -77,7 +78,7 @@ func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
 	gl.DrawElements(gl.TRIANGLES, e.Model.GetVertexCount(), gl.UNSIGNED_INT, gl.PtrOffset(0))
 
 	gl.DisableVertexAttribArray(0)
-
+	gl.DisableVertexAttribArray(1)
 	glHelper.BindVertexArray(0)
 	gl.UseProgram(0)
 }

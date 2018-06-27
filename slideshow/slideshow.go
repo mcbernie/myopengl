@@ -38,11 +38,13 @@ type Slideshow struct {
 //MakeSlideshow Generates the slideshow
 func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader) *Slideshow {
 
+	max := float32(1.0)
+
 	verts := []float32{
-		-1.0, 1.0, -0.1, //V0
-		-1.0, -1.0, -0.1, //V1
-		1.0, -1.0, -0.1, //V2
-		1.0, 1.0, -0.1, //V3
+		-max, max, -0.1, //V0
+		-max, -max, -0.1, //V1
+		max, -max, -0.1, //V2
+		max, max, -0.1, //V3
 	}
 	// x, y, z
 	/*verts := []float32{
@@ -58,7 +60,7 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 	}
 
 	model := loader.LoadToVAO(verts, inds)
-	entity := objects.MakeEntity(model, mgl32.Vec3{0, 0, 0}, 0, 0, 0, 1.0)
+	entity := objects.MakeEntity(model, mgl32.Vec3{0, 0.0, -0.2}, 0, 0, 0, 1.0)
 
 	s := &Slideshow{
 		SlideShowEntity: entity,
