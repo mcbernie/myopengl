@@ -18,8 +18,8 @@ type Renderer struct {
 }
 
 func MakeRenderer() *Renderer {
-	projectionMatrix := mgl32.Perspective(70, 1, .01, 1000)
-
+	//projectionMatrix := mgl32.Perspective(70, 1, .01, 1000)
+	projectionMatrix := mgl32.Ortho2D(-1, 1, -1, 1)
 	shader, err := createDefaultShader()
 
 	shader.Use()

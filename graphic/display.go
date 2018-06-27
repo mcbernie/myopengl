@@ -46,7 +46,15 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
 
-	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+	//gl.Viewport(1000, 500, 40000, int32(windowHeight))
+	//gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+	)
+
+	/*gl.MatrixMode(gl.PROJECTION)
+	gl.LoadIdentity()
+	gl.Ortho(-10, 10, -10, 10, -10, 10)
+	gl.MatrixMode(gl.MODELVIEW)
+	gl.LoadIdentity()*/
 	/**
 		My Testing Area
 	**/
@@ -136,7 +144,8 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 func (d *Display) SetWindowSize(width, height int) {
 	d.windowWidth = float32(width)
 	d.windowHeight = float32(height)
-
+	log.Println("set window size by framebuffer size")
+	gl.Viewport(0, 0, int32(width), int32(height))
 	d.font.ReplaceMeshCreator()
 }
 
@@ -168,10 +177,10 @@ func (d *Display) Render(time float64) {
 		lastTime = time
 	}
 
-	gl.BindFramebuffer(gl.FRAMEBUFFER, rendFrameBuff)
+	/*gl.BindFramebuffer(gl.FRAMEBUFFER, rendFrameBuff)
 	gl.Viewport(0, 0, int32(d.windowWidth), int32(d.windowHeight))
 	fonts.TextMaster.Render()
-	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
+	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)*/
 
 	//d.entity.IncreasePosition(0.09*duration, -0.02*duration, 0)
 	//d.slideshow.SlideShowEntity.IncreasePosition(0.05*duration, -0.02*duration, 0)

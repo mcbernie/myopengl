@@ -69,7 +69,11 @@ func programLoop(window *glfw.Window) error {
 	display := graphic.InitDisplay(width, height, delay, duration)
 	display.LoadImagesFromPath("./assets/images")
 
-	window.SetSizeCallback(func(w *glfw.Window, width int, height int) {
+	/*window.SetSizeCallback(func(w *glfw.Window, width int, height int) {
+		display.SetWindowSize(width, height)
+	})*/
+
+	window.SetFramebufferSizeCallback(func(w *glfw.Window, width, height int) {
 		display.SetWindowSize(width, height)
 	})
 
@@ -104,7 +108,7 @@ func programLoop(window *glfw.Window) error {
 	//display.LoadVideo("assets/video/tr5_event_bally.mp4", "Big_Buck_Bunny")
 	defer display.Delete()
 
-	//gl.Enable(gl.DEPTH_TEST)
+	gl.Enable(gl.DEPTH_TEST)
 
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
@@ -117,9 +121,9 @@ func programLoop(window *glfw.Window) error {
 		glfw.PollEvents()
 
 		// background color
-		glHelper.ClearColor(0.0, 0.0, 0.0, 1.0)
-		glHelper.Clear(glHelper.GlColorBufferBit)
-		//gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		glHelper.ClearColor(0.5, 0.4, 0.2, 1.0)
+		//glHelper.Clear(glHelper.GlColorBufferBit)
+		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 		display.Render(glfw.GetTime())
 
