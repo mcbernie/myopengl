@@ -6,6 +6,7 @@ import (
 	"image/draw"
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
+	"log"
 
 	"github.com/mcbernie/myopengl/glHelper"
 )
@@ -16,12 +17,17 @@ type Texture struct {
 	target  uint32 // same target as gl.BindTexture(<this param>, ...)
 	texUnit uint32 // Texture unit that is currently bound to ex: gl.TEXTURE0
 	unit    uint32
-	width   int32
-	height  int32
+	Width   int32
+	Height  int32
 }
 
 var errUnsupportedStride = errors.New("unsupported stride, only 32-bit colors supported")
 var errTextureNotBound = errors.New("texture not found")
+
+//NewTextureDefault initialize a new Texture with default WrapS and WrapR from Image
+func NewTextureDefault() *Texture {
+	return NewTexture(glHelper.GlLinear, glHelper.GlLinear)
+}
 
 //NewTexture initialize a new Texture from Image
 func NewTexture(wrapR, wrapS int32) *Texture {
@@ -88,8 +94,9 @@ func (tex *Texture) ReplaceImage(img image.Image) error {
 	pixType := uint32(glHelper.GlUnsignedByte)
 	dataPtr := glHelper.Ptr(rgba.Pix)
 
-	tex.width = width
-	tex.height = height
+	log.Println("Replace Texture:", width, " height:", height)
+	tex.Width = width
+	tex.Height = height
 	tex.Bind(tex.unit)
 	glHelper.TexImage2D(tex.target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
 
@@ -98,6 +105,7 @@ func (tex *Texture) ReplaceImage(img image.Image) error {
 	glHelper.TexParameteri(tex.target, glHelper.GlTextureMinFilter, glHelper.GlLinearMipmapLinear)
 	glHelper.TexParameteri(tex.target, glHelper.GlTextureLodBias, 0)
 	tex.UnBind()
+	log.Println(glHelper.ErrorCheck())
 	return nil
 
 }

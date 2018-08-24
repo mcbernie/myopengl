@@ -1,9 +1,10 @@
-package gfx
+package slideshow
 
 import (
 	"errors"
 	"fmt"
 
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
@@ -39,7 +40,7 @@ type Transition struct {
 	defaultParams map[string]interface{}
 	paramsTypes   map[string]string
 	//Shader Holds the program for this Transition
-	Shader *Program
+	Shader *gfx.Program
 	//Name save the transition name
 	Name string
 }
@@ -102,16 +103,16 @@ func makeFrag(transitionGlsl string, resizeMode ResizeMode) string {
 func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection [16]float32) *Transition {
 
 	// create a shader and put it in the thing here
-	vertShader, err := NewShader(vert, glHelper.GlVertexShader)
+	vertShader, err := gfx.NewShader(vert, glHelper.GlVertexShader)
 	if err != nil {
 		panic("VertexShader error:" + err.Error())
 	}
-	fragShader, err := NewShader(makeFrag(glsl, resizeMode), glHelper.GlFragmentShader)
+	fragShader, err := gfx.NewShader(makeFrag(glsl, resizeMode), glHelper.GlFragmentShader)
 	if err != nil {
 		panic("FragmentShader error:" + err.Error())
 	}
 
-	program, err := NewProgram(vertShader, fragShader)
+	program, err := gfx.NewProgram(vertShader, fragShader)
 	if err != nil {
 		panic("Program Error:" + err.Error())
 	}
@@ -137,7 +138,7 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection 
 }
 
 //Draw draws a transition
-func (transition *Transition) Draw(progress float32, from *Texture, to *Texture /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
+func (transition *Transition) Draw(progress float32, from *gfx.Texture, to *gfx.Texture /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
 	shader := transition.Shader
 	shader.Use()
 	//glHelper.Uniform1f(shader.GetUniform("ratio"), width/height)
@@ -147,8 +148,8 @@ func (transition *Transition) Draw(progress float32, from *Texture, to *Texture 
 	to.Bind(1)
 	glHelper.Uniform1i(shader.GetUniform("from"), 0)
 	glHelper.Uniform1i(shader.GetUniform("to"), 1)
-	glHelper.Uniform1i(shader.GetUniform("_fromR"), from.width/from.height)
-	glHelper.Uniform1i(shader.GetUniform("_toR"), to.width/to.height)
+	glHelper.Uniform1i(shader.GetUniform("_fromR"), from.Width/from.Height)
+	glHelper.Uniform1i(shader.GetUniform("_toR"), to.Width/to.Height)
 	// other...
 	//shader.Delete()
 }

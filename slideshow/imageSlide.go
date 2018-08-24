@@ -1,11 +1,11 @@
-package gfx
+package slideshow
 
 import (
 	"image"
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 
 	_ "image/jpeg" // Import JPEG Decoding
@@ -72,7 +72,7 @@ func (s *ImageSlide) LoadImageFromRemote(url string) error {
 
 //LoadImageFromFile Load an image from Path
 func (s *ImageSlide) LoadImageFromFile(path string) error {
-	img, err := LoadImageFromFile(path)
+	img, err := gfx.LoadImageFromFile(path)
 	if err != nil {
 		log.Println("failed to load image from path:" + path)
 		return err
@@ -83,24 +83,6 @@ func (s *ImageSlide) LoadImageFromFile(path string) error {
 	s.SetFrame(img)
 	s.setIsLoading(false)
 	return nil
-}
-
-//LoadImageFromFile Loads an image from file
-func LoadImageFromFile(file string) (image.Image, error) {
-	imgFile, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-
-	defer imgFile.Close()
-
-	// Decode detexts the type of image as long as its image/<type> is imported
-	img, _, err := image.Decode(imgFile)
-	if err != nil {
-		return nil, err
-	}
-
-	return img, nil
 }
 
 //Update lock if there is a news image

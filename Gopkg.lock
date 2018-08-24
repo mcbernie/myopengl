@@ -26,6 +26,12 @@
   revision = "5ab0e04e1f55a10f3a71b1fccc60ca2ee9a0bc02"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/golang/freetype"
+  packages = ["raster","truetype"]
+  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+
+[[projects]]
   name = "gocv.io/x/gocv"
   packages = ["."]
   revision = "09994446aec439b74e48f97f777026cc47a6fe14"
@@ -34,12 +40,12 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/image"
-  packages = ["math/f32"]
+  packages = ["font","font/gofont/goregular","math/f32","math/fixed"]
   revision = "af66defab954cb421ca110193eed9477c8541e2a"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4550cddfd36636eb8d30130ff46addb4d77271a419a7d6ce6c3c08eb711fda47"
+  inputs-digest = "29f3a26c9cc3ff95470bd838fdc65b75c279046f5ca1b50093190bb1ed2368b7"
   solver-name = "gps-cdcl"
   solver-version = 1

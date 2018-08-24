@@ -45,6 +45,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	m := window.GetMonitor()
+	log.Println("m:", m)
+
 	window.MakeContextCurrent()
 
 	if err := glHelper.Init(); err != nil {
@@ -65,6 +68,7 @@ func main() {
 func programLoop(window *glfw.Window) error {
 
 	width, height := window.GetFramebufferSize()
+	//window.SwapBuffers()
 
 	display := graphic.InitDisplay(width, height, delay, duration)
 	display.LoadImagesFromPath("./assets/images")
@@ -98,6 +102,18 @@ func programLoop(window *glfw.Window) error {
 		log.Println("now begin loading 2. a video...")
 		display.LoadVideoAtRuntime("assets/video/tr5_event_bally.mp4", "tr5_bally_event", 10)
 	}()
+
+	/*
+	   m := w.GetMonitor()
+	   n := m.GetName()
+	   log.Println("NAme:", n)
+	   wi, _ := m.GetPhysicalSize()
+	   dpi := float32(width) / (float32(wi) / 25.4)
+	   log.Println("My DPI:", dpi)
+	*/
+
+	mw, mh := glfw.GetMonitors()[1].GetPhysicalSize()
+	log.Println("Monitors: ", mw, " h:", mh)
 
 	//display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
 

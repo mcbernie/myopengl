@@ -1,4 +1,4 @@
-package gfx
+package slideshow
 
 import (
 	"image"
@@ -6,6 +6,7 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
@@ -17,7 +18,7 @@ type MediaSlide struct {
 	delay float64
 
 	//Tex CurrentTexture
-	Tex      *Texture
+	Tex      *gfx.Texture
 	isLoaded int32
 
 	imageMux             sync.Mutex
@@ -38,7 +39,7 @@ func (s *MediaSlide) GetUid() string {
 
 func createSlide(uid string, isVideo bool) *MediaSlide {
 
-	tex := NewTexture(glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+	tex := gfx.NewTexture(glHelper.GlClampToEdge, glHelper.GlClampToEdge)
 	return &MediaSlide{
 		uid:      uid,
 		Tex:      tex,
@@ -68,7 +69,7 @@ func (s *MediaSlide) IsLoading() bool {
 
 }
 
-func (s *MediaSlide) Display() *Texture {
+func (s *MediaSlide) Display() *gfx.Texture {
 	return s.Tex
 }
 

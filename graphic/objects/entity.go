@@ -6,7 +6,7 @@ import (
 )
 
 type Entity struct {
-	Model    *RawModel
+	Model    *Model
 	Position mgl32.Vec3
 	Rx       float32
 	Ry       float32
@@ -15,7 +15,7 @@ type Entity struct {
 	color    [4]float32
 }
 
-func MakeEntity(model *RawModel, position mgl32.Vec3, rX, rY, rZ, scale float32) *Entity {
+func MakeEntity(model *Model, position mgl32.Vec3, rX, rY, rZ, scale float32) *Entity {
 	return &Entity{
 		Model:    model,
 		Position: position,

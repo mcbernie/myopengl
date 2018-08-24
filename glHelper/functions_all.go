@@ -5,7 +5,9 @@ import (
 	"strings"
 	"unsafe"
 
+	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 	"github.com/go-gl/gl/v2.1/gl"
+
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -237,4 +239,39 @@ func DisableVertexAttribArray(v int) {
 
 func DrawTrianglesArray(first, vertexCount int32) {
 	gl.DrawArrays(GlTriangles, first, vertexCount)
+}
+
+//GenBuffer Generate an VBO
+func GenBuffers(n int32) uint32 {
+	var vbo uint32
+	gl.GenBuffers(n, &vbo)
+	return vbo
+}
+
+//BindBuffer Select buffer as current buffer
+func BindBuffer(bufferType uint32, vbo uint32) {
+	gl.BindBuffer(bufferType, vbo)
+}
+
+//DeleteBuffer remove the buffer from memory
+func DeleteBuffer(vbo uint32) {
+	gl.DeleteBuffers(1, &vbo)
+}
+
+func BufferData(bufferType uint32, size int, ptr unsafe.Pointer, method uint32) {
+	gl.BufferData(bufferType, size, ptr, method)
+}
+
+func VertexAttribPointer(index uint32, size int32, dataType uint32, normalized bool, stride int32, pointer unsafe.Pointer) {
+	gl.VertexAttribPointer(index, size, dataType, normalized, stride, pointer)
+}
+
+func DrawElements(mode uint32, count int32, enumType uint32, indicies unsafe.Pointer) {
+	// Hier fehler
+	//log.Println("count:", count)
+	gl.DrawElements(mode, count, enumType, gl.PtrOffset(0))
+}
+
+func PtrOffset(nr int) unsafe.Pointer {
+	return gl.PtrOffset(nr)
 }

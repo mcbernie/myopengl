@@ -1,16 +1,65 @@
 package objects
 
 import (
-	"github.com/mcbernie/myopengl/glHelper"
-	//"math"
-	//"math/rand"
 	"log"
 
+	"github.com/mcbernie/myopengl/glHelper"
+
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
+
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/mcbernie/myopengl/gfx"
 )
+
+//type RenderFunction func(interface{}, float64)
+
+type ObjectInterface interface {
+	Render(r *Renderer, time float64)
+}
+
+type Object struct {
+	Name     string
+	Textures []*gfx.Texture
+	Model    *Model
+	Entity   *Entity
+	Shader   *gfx.Program
+}
+
+func (obj *Object) Render(r *Renderer, time float64) {
+
+	for t, tex := range obj.Textures {
+		tex.Bind(uint32(t))
+		defer tex.UnBind()
+	}
+	obj.Shader.Use()
+	defer obj.Shader.UnUse()
+	glHelper.Uniform1i(obj.Shader.GetUniform("renderedTexture"), 0)
+	glHelper.Uniform1f(obj.Shader.GetUniform("time"), float32(time/2.5))
+	r.RenderEntity(obj.Entity, obj.Shader)
+}
+
+type ObjectsList struct {
+	objects  []ObjectInterface
+	renderer *Renderer
+}
+
+func CreateObjectList(r *Renderer) ObjectsList {
+	o := ObjectsList{
+		renderer: r,
+	}
+
+	return o
+}
+
+func (o *ObjectsList) AddRenderer(r ObjectInterface) {
+	o.objects = append(o.objects, r)
+}
+
+func (o *ObjectsList) Render(time float64) {
+	for _, r := range o.objects {
+		r.Render(o.renderer, time)
+	}
+}
 
 type Renderer struct {
 	Shader           *gfx.Program
@@ -51,18 +100,20 @@ func (r *Renderer) UseDefaultShader() {
 func (r *Renderer) Render(model *RawModel) {
 	glHelper.BindVertexArray(model.GetVao())
 
-	gl.EnableVertexAttribArray(0)
-	gl.DrawElements(gl.TRIANGLES, model.GetVertexCount(), gl.UNSIGNED_INT, gl.PtrOffset(0))
-	gl.DisableVertexAttribArray(0)
+	glHelper.EnableVertexAttribArray(0)
+	glHelper.DrawElements(glHelper.GlTriangles, model.GetVertexCount(), glHelper.GlUnsignedInt, glHelper.PtrOffset(0))
+	glHelper.DisableVertexAttribArray(0)
 
 	glHelper.BindVertexArray(0)
-	gl.UseProgram(0)
+	glHelper.UseProgram(0)
 }
 
 func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
-	glHelper.BindVertexArray(e.Model.GetVao())
-	gl.EnableVertexAttribArray(0)
-	gl.EnableVertexAttribArray(1)
+	e.Model.Bind()
+
+	glHelper.EnableVertexAttribArray(0)
+	glHelper.EnableVertexAttribArray(1)
+	//glHelper.EnableVertexAttribArray(2)
 
 	rotMatrix := mgl32.HomogRotate3DX(e.Rx)
 	rotMatrix = rotMatrix.Mul4(mgl32.HomogRotate3DY(e.Ry))
@@ -71,14 +122,16 @@ func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
 	scaleMatrix := mgl32.Scale3D(e.Scale, e.Scale, e.Scale)
 	translationMatrix := rotMatrix.Mul4(mgl32.Translate3D(e.Position.X(), e.Position.Y(), e.Position.Z()))
 	translationMatrix = translationMatrix.Mul4(scaleMatrix)
-
 	glHelper.Uniform4f(shader.GetUniform("color"), e.color)
 	glHelper.UniformMatrix4(shader.GetUniform("transformationMatrix"), translationMatrix)
 
-	gl.DrawElements(gl.TRIANGLES, e.Model.GetVertexCount(), gl.UNSIGNED_INT, gl.PtrOffset(0))
+	//gl.DrawElements(gl.TRIANGLES, e.Model.vertexCount, gl.UNSIGNED_INT, gl.PtrOffset(0))
+	e.Model.Draw()
 
-	gl.DisableVertexAttribArray(0)
-	gl.DisableVertexAttribArray(1)
-	glHelper.BindVertexArray(0)
-	gl.UseProgram(0)
+	glHelper.DisableVertexAttribArray(0)
+	glHelper.DisableVertexAttribArray(1)
+	//glHelper.DisableVertexAttribArray(2)
+	//glHelper.BindVertexArray(0)
+	//glHelper.UseProgram(0)
+	e.Model.UnBind()
 }

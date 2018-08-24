@@ -28,7 +28,7 @@ func CreateFontShader() *FontShader {
 		panic("Program Error:" + err.Error())
 	}
 
-	projectionMatrix := mgl32.Ortho2D(-1, 1, -1, 1)
+	projectionMatrix := mgl32.Ortho2D(-5, 5, -5, 5)
 
 	//Put the ShaderProgram to Abstraction of Program -> FontShader
 	f := &FontShader{program}

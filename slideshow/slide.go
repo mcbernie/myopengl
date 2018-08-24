@@ -1,7 +1,9 @@
-package gfx
+package slideshow
 
 import (
 	"image"
+
+	"github.com/mcbernie/myopengl/gfx"
 )
 
 type Slide interface {
@@ -9,7 +11,7 @@ type Slide interface {
 	GetUid() string
 	IsLoading() bool
 
-	Display() *Texture
+	Display() *gfx.Texture
 	Update()
 	Play()
 	SetFrame(img image.Image)

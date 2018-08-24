@@ -5,7 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/glHelper"
 	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
@@ -16,8 +16,8 @@ type Slideshow struct {
 
 	loaders []*loader
 
-	slides      []gfx.Slide
-	transitions []*gfx.Transition
+	slides      []Slide
+	transitions []*Transition
 	box         []float32
 
 	currentIndex int
@@ -59,9 +59,11 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 		3, 1, 2,
 	}
 
-	model := loader.LoadToVAO(verts, inds)
-	entity := objects.MakeEntity(model, mgl32.Vec3{0, 0.0, -0.2}, 0, 0, 0, 1.0)
-
+	//model := loader.LoadToVAO(verts, inds)
+	m := objects.CreateModelWithData(inds, verts)
+	//m := objects.CreateTestModel(model.GetVao(), model.GetVertexCount())
+	entity := objects.MakeEntity(m, mgl32.Vec3{0, 0.0, -0.2}, 0, 0, 0, 1.0)
+	log.Println("GLError:", glHelper.ErrorCheck())
 	s := &Slideshow{
 		SlideShowEntity: entity,
 
@@ -86,12 +88,12 @@ var currentDuration float64
 var pause bool
 var delayForTransition float64
 
-var from, to gfx.Slide
-var transition *gfx.Transition
+var from, to Slide
+var transition *Transition
 var transitionId int
 
 //Render Render the transitions
-func (s *Slideshow) Render(time float64, renderer *objects.Renderer) {
+func (s *Slideshow) Render(renderer *objects.Renderer, time float64) {
 	delayForTransition = 5.0
 	aviableSlides := s.onlyAviableSlides()
 
@@ -161,7 +163,7 @@ func (s *Slideshow) setIndexSlides(aviableSlides int) {
 
 }
 
-func (s *Slideshow) getFromAndTo() (gfx.Slide, gfx.Slide) {
+func (s *Slideshow) getFromAndTo() (Slide, Slide) {
 
 	idFrom, from := getSlideByUID(s.slides, s.currentSlide)
 	if idFrom == -1 {
@@ -181,7 +183,7 @@ func (s *Slideshow) getFromAndTo() (gfx.Slide, gfx.Slide) {
 	return from, to
 }
 
-func getSlideByUID(slides []gfx.Slide, uid string) (int, gfx.Slide) {
+func getSlideByUID(slides []Slide, uid string) (int, Slide) {
 
 	for i, s := range slides {
 		if s.GetUid() == uid {
@@ -193,9 +195,9 @@ func getSlideByUID(slides []gfx.Slide, uid string) (int, gfx.Slide) {
 
 }
 
-func (s *Slideshow) onlyAviableSlides() []gfx.Slide {
+func (s *Slideshow) onlyAviableSlides() []Slide {
 
-	r := make([]gfx.Slide, 0)
+	r := make([]Slide, 0)
 	for _, s := range s.slides {
 		if !s.IsLoading() {
 			r = append(r, s)
@@ -216,4 +218,5 @@ func (s *Slideshow) CleanUP() {
 		slide.CleanUP()
 	}
 
+	s.SlideShowEntity.Model.Delete()
 }

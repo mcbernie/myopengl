@@ -1,16 +1,18 @@
-package gfx
+package slideshow
 
 import (
+	"image"
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
 
+	"github.com/mcbernie/myopengl/gfx"
 	"github.com/mcbernie/myopengl/glHelper"
 )
 
 //VideoSlide A Simple VideoSlide element
 type VideoSlide struct {
 	*MediaSlide
-	video *Video
+	video *gfx.Video
 
 	gotNewFrame   chan bool
 	finishedVideo chan bool
@@ -31,7 +33,7 @@ func createVideoSlide(uid string) *VideoSlide {
 //NewSlideForVideo Create a new Slide for Video content
 func NewSlideForVideo(path, uid string) *VideoSlide {
 	vs := createVideoSlide(uid)
-	vs.video = CreateVideo(path, vs)
+	vs.video = gfx.CreateVideo(path, vs)
 	return vs
 }
 
@@ -44,7 +46,7 @@ func NewSlideFromRemoteVideo(url string, uid string, withDuration float64) (*Vid
 	})
 	s := <-ret
 	s.delay = withDuration
-	s.video = CreateVideo(url, s)
+	s.video = gfx.CreateVideo(url, s)
 	s.BackgroundThread()
 
 	return s, nil
@@ -85,4 +87,15 @@ func (s *VideoSlide) GoToNextSlide(currentDuration float64) bool {
 	}
 
 	return false
+}
+
+func (s *VideoSlide) RefreshVideoFrame(img *image.RGBA) {
+	s.imageMux.Lock()
+	s.img = img
+	s.imageMux.Unlock()
+	s.gotNewFrame <- true
+}
+
+func (s *VideoSlide) EndOfVideo() {
+	s.finishedVideo <- true
 }

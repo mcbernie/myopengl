@@ -12,6 +12,11 @@ import (
 	"gocv.io/x/gocv"
 )
 
+type VideoSlideInterface interface {
+	RefreshVideoFrame(img *image.RGBA)
+	EndOfVideo()
+}
+
 //Video Simple Video structure
 type Video struct {
 	device *gocv.VideoCapture
@@ -24,7 +29,7 @@ type Video struct {
 	swsCtx    *gmf.SwsCtx
 
 	//SlideShow
-	slide *VideoSlide
+	slide VideoSlideInterface
 }
 
 func (v *Video) CleanUP() {
@@ -46,7 +51,7 @@ func (v *Video) CleanUP() {
 	}
 }
 
-func CreateVideo(srcFileName string, slide *VideoSlide) *Video {
+func CreateVideo(srcFileName string, slide VideoSlideInterface) *Video {
 	var err error
 
 	v := &Video{
@@ -108,7 +113,7 @@ func (v *Video) LoopPlay() {
 	v.Play()
 
 	//send to channel finishedVideo!!
-	v.slide.finishedVideo <- true
+	v.slide.EndOfVideo()
 
 	// frame seeking only after 1/2 sec
 	time.Sleep(500 * time.Millisecond)
@@ -151,10 +156,8 @@ func (v *Video) Play() {
 				img.Stride = 4 * width // 4 bytes per pixel (RGBA), width times per row
 				img.Rect = image.Rect(0, 0, width, height)
 				time.Sleep(30 * time.Millisecond)
-				v.slide.imageMux.Lock()
-				v.slide.img = img
-				v.slide.imageMux.Unlock()
-				v.slide.gotNewFrame <- true
+
+				v.slide.RefreshVideoFrame(img)
 
 				defer gmf.Release(p)
 			} else if err != nil {
