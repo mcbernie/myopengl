@@ -69,7 +69,9 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	}()*/
 
 	//d.fpsText = fonts.CreateGuiText("init", 0.7, d.font, [2]float32{-1.0, 1.0}, 4, false)
-	d.laufschrift = objects.CreateLaufschrift("Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz")
+	d.laufschrift = objects.CreateLaufschrift(
+		"Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz",
+		-0.8, -0.8, 1.6, 0.2)
 	d.objectsList.AddRenderer(d.laufschrift)
 
 	return d
@@ -107,6 +109,7 @@ func (d *Display) SetKeyCallback(key glfw.Key, scancode int, action glfw.Action,
 	if key == glfw.KeyRight {
 		d.laufschrift.SetPosition(float32(step), 0)
 	}
+
 }
 
 //EnableBlendFunction are required to display alpha in fragmentshaders / ex. Laufschrift
