@@ -3,6 +3,7 @@ package graphic
 import (
 	"log"
 
+	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/graphic/fonts"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
@@ -81,6 +82,31 @@ func (d *Display) SetProjection() {
 	helper.Ortho(0.0, float64(d.windowWidth), 0.0, float64(d.windowHeight), 0.0, 1.0)
 	helper.MatrixMode(helper.GlModelView)
 	helper.LoadIdentity()
+}
+
+func (d *Display) SetKeyCallback(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+
+	step := 0.01
+
+	if mods == glfw.ModShift {
+		step = 0.1
+	}
+
+	if key == glfw.KeyDown {
+		d.laufschrift.SetPosition(0, -float32(step))
+	}
+
+	if key == glfw.KeyUp {
+		d.laufschrift.SetPosition(0, float32(step))
+	}
+
+	if key == glfw.KeyLeft {
+		d.laufschrift.SetPosition(-float32(step), 0)
+	}
+
+	if key == glfw.KeyRight {
+		d.laufschrift.SetPosition(float32(step), 0)
+	}
 }
 
 //EnableBlendFunction are required to display alpha in fragmentshaders / ex. Laufschrift

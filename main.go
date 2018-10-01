@@ -54,7 +54,6 @@ func main() {
 	log.Println("OpenGL Version:", gl.GoStr(gl.GetString(gl.VERSION)))
 	log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 
-	window.SetKeyCallback(keyCallback)
 	window.MakeContextCurrent()
 
 	err = programLoop(window)
@@ -69,6 +68,12 @@ func programLoop(window *glfw.Window) error {
 	display := graphic.InitDisplay(width, height, delay, duration)
 	window.SetFramebufferSizeCallback(func(w *glfw.Window, width, height int) {
 		display.SetWindowSize(width, height)
+	})
+
+	window.SetKeyCallback(func(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
+		mods glfw.ModifierKey) {
+		display.SetKeyCallback(key, scancode, action, mods)
+		keyCallback(window, key, scancode, action, mods)
 	})
 
 	display.LoadImagesFromPath("./assets/images")
