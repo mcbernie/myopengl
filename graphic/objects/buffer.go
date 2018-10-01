@@ -1,8 +1,6 @@
 package objects
 
-import (
-	"github.com/mcbernie/myopengl/glHelper"
-)
+import "github.com/mcbernie/myopengl/graphic/helper"
 
 type modelBufferType struct {
 	bufferType uint32
@@ -10,30 +8,30 @@ type modelBufferType struct {
 }
 
 func CreateBuffer(bufferType uint32) modelBufferType {
-	vbo := glHelper.GenBuffers(1)
+	vbo := helper.GenBuffers(1)
 	return modelBufferType{
 		vbo:        vbo,
 		bufferType: bufferType,
 	}
 }
 func (m modelBufferType) Bind() {
-	glHelper.BindBuffer(m.bufferType, m.vbo)
+	helper.BindBuffer(m.bufferType, m.vbo)
 }
 func (m modelBufferType) UnBind() {
-	glHelper.BindBuffer(m.bufferType, 0)
+	helper.BindBuffer(m.bufferType, 0)
 }
 func (m modelBufferType) Delete() {
-	glHelper.DeleteBuffer(m.vbo)
+	helper.DeleteBuffer(m.vbo)
 }
 
 func (m modelBufferType) WriteData(data []float32) {
-	glHelper.BufferData(m.bufferType, len(data)*4, glHelper.Ptr(data), glHelper.GlStaticDraw)
+	helper.BufferData(m.bufferType, len(data)*4, helper.Ptr(data), helper.GlStaticDraw)
 }
 
 func (m modelBufferType) WriteDataInt(data []int32) {
-	glHelper.BufferData(m.bufferType, len(data)*4, glHelper.Ptr(data), glHelper.GlStaticDraw)
+	helper.BufferData(m.bufferType, len(data)*4, helper.Ptr(data), helper.GlStaticDraw)
 }
 
 func (m modelBufferType) PointDataToAttributeList(attributeNumber uint32, coordinateSize int32) {
-	glHelper.VertexAttribPointer(attributeNumber, coordinateSize, glHelper.GlFloat, false, 0, glHelper.PtrOffset(0))
+	helper.VertexAttribPointer(attributeNumber, coordinateSize, helper.GlFloat, false, 0, helper.PtrOffset(0))
 }

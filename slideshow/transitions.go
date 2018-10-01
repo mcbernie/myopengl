@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
+	"github.com/mcbernie/myopengl/graphic/helper"
+	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 const fragementShaderTemplate = `
@@ -40,7 +40,7 @@ type Transition struct {
 	defaultParams map[string]interface{}
 	paramsTypes   map[string]string
 	//Shader Holds the program for this Transition
-	Shader *gfx.Program
+	Shader *objects.Program
 	//Name save the transition name
 	Name string
 }
@@ -103,16 +103,16 @@ func makeFrag(transitionGlsl string, resizeMode ResizeMode) string {
 func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection [16]float32) *Transition {
 
 	// create a shader and put it in the thing here
-	vertShader, err := gfx.NewShader(vert, glHelper.GlVertexShader)
+	vertShader, err := objects.NewShader(vert, helper.GlVertexShader)
 	if err != nil {
 		panic("VertexShader error:" + err.Error())
 	}
-	fragShader, err := gfx.NewShader(makeFrag(glsl, resizeMode), glHelper.GlFragmentShader)
+	fragShader, err := objects.NewShader(makeFrag(glsl, resizeMode), helper.GlFragmentShader)
 	if err != nil {
 		panic("FragmentShader error:" + err.Error())
 	}
 
-	program, err := gfx.NewProgram(vertShader, fragShader)
+	program, err := objects.NewProgram(vertShader, fragShader)
 	if err != nil {
 		panic("Program Error:" + err.Error())
 	}
@@ -127,7 +127,7 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection 
 	program.AddUniform("_fromR")
 	program.AddUniform("_toR")
 
-	glHelper.UniformMatrix4(program.GetUniform("projectionMatrix"), projection)
+	helper.UniformMatrix4(program.GetUniform("projectionMatrix"), projection)
 
 	program.UnUse()
 	return &Transition{
@@ -138,18 +138,18 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection 
 }
 
 //Draw draws a transition
-func (transition *Transition) Draw(progress float32, from *gfx.Texture, to *gfx.Texture /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
+func (transition *Transition) Draw(progress float32, from *objects.Texture, to *objects.Texture /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
 	shader := transition.Shader
 	shader.Use()
 	//glHelper.Uniform1f(shader.GetUniform("ratio"), width/height)
-	glHelper.Uniform1f(shader.GetUniform("progress"), progress)
+	helper.Uniform1f(shader.GetUniform("progress"), progress)
 
 	from.Bind(0)
 	to.Bind(1)
-	glHelper.Uniform1i(shader.GetUniform("from"), 0)
-	glHelper.Uniform1i(shader.GetUniform("to"), 1)
-	glHelper.Uniform1i(shader.GetUniform("_fromR"), from.Width/from.Height)
-	glHelper.Uniform1i(shader.GetUniform("_toR"), to.Width/to.Height)
+	helper.Uniform1i(shader.GetUniform("from"), 0)
+	helper.Uniform1i(shader.GetUniform("to"), 1)
+	helper.Uniform1i(shader.GetUniform("_fromR"), from.Width/from.Height)
+	helper.Uniform1i(shader.GetUniform("_toR"), to.Width/to.Height)
 	// other...
 	//shader.Delete()
 }

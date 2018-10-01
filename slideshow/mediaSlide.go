@@ -6,8 +6,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
+	"github.com/mcbernie/myopengl/graphic/helper"
+	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 //MediaSlide A default Slide for all types of Media
@@ -18,7 +18,7 @@ type MediaSlide struct {
 	delay float64
 
 	//Tex CurrentTexture
-	Tex      *gfx.Texture
+	Tex      *objects.Texture
 	isLoaded int32
 
 	imageMux             sync.Mutex
@@ -39,7 +39,7 @@ func (s *MediaSlide) GetUid() string {
 
 func createSlide(uid string, isVideo bool) *MediaSlide {
 
-	tex := gfx.NewTexture(glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+	tex := objects.NewTexture(helper.GlClampToEdge, helper.GlClampToEdge)
 	return &MediaSlide{
 		uid:      uid,
 		Tex:      tex,
@@ -69,7 +69,7 @@ func (s *MediaSlide) IsLoading() bool {
 
 }
 
-func (s *MediaSlide) Display() *gfx.Texture {
+func (s *MediaSlide) Display() *objects.Texture {
 	return s.Tex
 }
 
@@ -84,7 +84,7 @@ func (s *MediaSlide) SetFrame(img image.Image) {
 //Delete remove texture from memory
 func (s *MediaSlide) Delete() {
 	log.Println("delete texture from ", s.uid)
-	glHelper.AddFunction(func() {
+	helper.AddFunction(func() {
 		s.Tex.Delete()
 	})
 

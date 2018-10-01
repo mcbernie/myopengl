@@ -3,12 +3,10 @@ package objects
 import (
 	"log"
 
-	"github.com/mcbernie/myopengl/glHelper"
-
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
 
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/graphic/helper"
 )
 
 //type RenderFunction func(interface{}, float64)
@@ -19,10 +17,10 @@ type ObjectInterface interface {
 
 type Object struct {
 	Name     string
-	Textures []*gfx.Texture
+	Textures []*Texture
 	Model    *Model
 	Entity   *Entity
-	Shader   *gfx.Program
+	Shader   *Program
 }
 
 func (obj *Object) Render(r *Renderer, time float64) {
@@ -33,8 +31,8 @@ func (obj *Object) Render(r *Renderer, time float64) {
 	}
 	obj.Shader.Use()
 	defer obj.Shader.UnUse()
-	glHelper.Uniform1i(obj.Shader.GetUniform("renderedTexture"), 0)
-	glHelper.Uniform1f(obj.Shader.GetUniform("time"), float32(time/2.5))
+	helper.Uniform1i(obj.Shader.GetUniform("renderedTexture"), 0)
+	helper.Uniform1f(obj.Shader.GetUniform("time"), float32(time/2.5))
 	r.RenderEntity(obj.Entity, obj.Shader)
 }
 
@@ -62,7 +60,7 @@ func (o *ObjectsList) Render(time float64) {
 }
 
 type Renderer struct {
-	Shader           *gfx.Program
+	Shader           *Program
 	projectionMatrix mgl32.Mat4
 }
 
@@ -73,7 +71,7 @@ func MakeRenderer() *Renderer {
 
 	shader.Use()
 	shader.AddUniform("projectionMatrix")
-	glHelper.UniformMatrix4(shader.GetUniform("projectionMatrix"), projectionMatrix)
+	helper.UniformMatrix4(shader.GetUniform("projectionMatrix"), projectionMatrix)
 	shader.UnUse()
 
 	if err != nil {
@@ -98,21 +96,21 @@ func (r *Renderer) UseDefaultShader() {
 }
 
 func (r *Renderer) Render(model *RawModel) {
-	glHelper.BindVertexArray(model.GetVao())
+	helper.BindVertexArray(model.GetVao())
 
-	glHelper.EnableVertexAttribArray(0)
-	glHelper.DrawElements(glHelper.GlTriangles, model.GetVertexCount(), glHelper.GlUnsignedInt, glHelper.PtrOffset(0))
-	glHelper.DisableVertexAttribArray(0)
+	helper.EnableVertexAttribArray(0)
+	helper.DrawElements(helper.GlTriangles, model.GetVertexCount(), helper.GlUnsignedInt, helper.PtrOffset(0))
+	helper.DisableVertexAttribArray(0)
 
-	glHelper.BindVertexArray(0)
-	glHelper.UseProgram(0)
+	helper.BindVertexArray(0)
+	helper.UseProgram(0)
 }
 
-func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
+func (r *Renderer) RenderEntity(e *Entity, shader *Program) {
 	e.Model.Bind()
 
-	glHelper.EnableVertexAttribArray(0)
-	glHelper.EnableVertexAttribArray(1)
+	helper.EnableVertexAttribArray(0)
+	helper.EnableVertexAttribArray(1)
 	//glHelper.EnableVertexAttribArray(2)
 
 	rotMatrix := mgl32.HomogRotate3DX(e.Rx)
@@ -122,16 +120,14 @@ func (r *Renderer) RenderEntity(e *Entity, shader *gfx.Program) {
 	scaleMatrix := mgl32.Scale3D(e.Scale, e.Scale, e.Scale)
 	translationMatrix := rotMatrix.Mul4(mgl32.Translate3D(e.Position.X(), e.Position.Y(), e.Position.Z()))
 	translationMatrix = translationMatrix.Mul4(scaleMatrix)
-	glHelper.Uniform4f(shader.GetUniform("color"), e.color)
-	glHelper.UniformMatrix4(shader.GetUniform("transformationMatrix"), translationMatrix)
+	helper.Uniform4f(shader.GetUniform("color"), e.color)
+	helper.UniformMatrix4(shader.GetUniform("transformationMatrix"), translationMatrix)
 
 	//gl.DrawElements(gl.TRIANGLES, e.Model.vertexCount, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	e.Model.Draw()
 
-	glHelper.DisableVertexAttribArray(0)
-	glHelper.DisableVertexAttribArray(1)
-	//glHelper.DisableVertexAttribArray(2)
-	//glHelper.BindVertexArray(0)
-	//glHelper.UseProgram(0)
+	helper.DisableVertexAttribArray(0)
+	helper.DisableVertexAttribArray(1)
+
 	e.Model.UnBind()
 }

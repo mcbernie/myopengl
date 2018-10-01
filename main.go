@@ -6,12 +6,14 @@ import (
 	"time"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-
 	"github.com/go-gl/gl/v2.1/gl"
+
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
 	"github.com/mcbernie/myopengl/graphic"
+	"github.com/mcbernie/myopengl/graphic/helper"
+	"github.com/mcbernie/myopengl/graphic/objects"
+
+	"github.com/pkg/profile"
 )
 
 const windowWidth = 800
@@ -26,9 +28,10 @@ func init() {
 }
 
 func main() {
-
-	//Setup Scoping
-	glHelper.InitScoping()
+	//cpu profiling
+	//defer profile.Start().Stop()
+	//mem profiling
+	defer profile.Start(profile.MemProfile).Stop()
 
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to inifitialize glfw:", err)
@@ -38,19 +41,15 @@ func main() {
 	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
-	//glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	//glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-	//glfw.CreateWindow(windowWidth, windowHeight, "basic slideshow", nil, nil)
-	window, err := gfx.CreateWindow(windowWidth, windowHeight, "basic slideshow")
+
+	window, err := objects.CreateWindow(windowWidth, windowHeight, "SlideShow Test")
 	if err != nil {
 		panic(err)
 	}
-	m := window.GetMonitor()
-	log.Println("m:", m)
+	//m := window.GetMonitor()
+	//log.Println("m:", m)
 
-	window.MakeContextCurrent()
-
-	if err := glHelper.Init(); err != nil {
+	if err := helper.Init(); err != nil {
 		panic(err)
 	}
 
@@ -58,6 +57,7 @@ func main() {
 	log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 
 	window.SetKeyCallback(keyCallback)
+	window.MakeContextCurrent()
 
 	err = programLoop(window)
 	if err != nil {
@@ -68,21 +68,17 @@ func main() {
 func programLoop(window *glfw.Window) error {
 
 	width, height := window.GetFramebufferSize()
-	//window.SwapBuffers()
-
 	display := graphic.InitDisplay(width, height, delay, duration)
-	display.LoadImagesFromPath("./assets/images")
-
 	window.SetFramebufferSizeCallback(func(w *glfw.Window, width, height int) {
 		display.SetWindowSize(width, height)
 	})
 
-	go func() {
+	display.LoadImagesFromPath("./assets/images")
 
+	go func() {
 		time.Sleep(10 * time.Second)
 		log.Println("now begin loading a image...")
 		display.LoadRemoteImage("http://wacogmbh.de:3999/index.php?m=fb&o=image&name=med_1421768202_45415200.jpg", "lkih76555")
-
 	}()
 
 	go func() {
@@ -97,49 +93,31 @@ func programLoop(window *glfw.Window) error {
 		display.RemoveSlide("lkih76555")
 	}()*/
 
-	go func() {
+	/*go func() {
 		time.Sleep(23 * time.Second)
 		log.Println("now begin loading 2. a video...")
 		display.LoadVideoAtRuntime("assets/video/tr5_event_bally.mp4", "tr5_bally_event", 10)
-	}()
+	}()*/
 
-	/*
-	   m := w.GetMonitor()
-	   n := m.GetName()
-	   log.Println("NAme:", n)
-	   wi, _ := m.GetPhysicalSize()
-	   dpi := float32(width) / (float32(wi) / 25.4)
-	   log.Println("My DPI:", dpi)
-	*/
+	//mw, mh := glfw.GetMonitors()[1].GetPhysicalSize()
+	//log.Println("Monitors: ", mw, " h:", mh)
 
-	mw, mh := glfw.GetMonitors()[1].GetPhysicalSize()
-	log.Println("Monitors: ", mw, " h:", mh)
-
-	//display.LoadVideo("assets/video/big_buck_bunny.mp4", "Big_Buck_Bunny")
-
-	//display.LoadVideo("assets/video/tr5_event_bally.mp4", "Big_Buck_Bunny")
 	defer display.Delete()
+	display.SetProjection()
 
-	//gl.Enable(gl.DEPTH_TEST)
-
-	gl.Enable(gl.BLEND)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	mac_moved := false
 
 	for !window.ShouldClose() {
-		//scoping...
-		glHelper.RunFunctions()
-
-		// poll events and call their registered callbacks
+		display.Render(glfw.GetTime())
+		window.SwapBuffers()
 		glfw.PollEvents()
 
-		// background color
-		glHelper.ClearColor(0.5, 0.4, 0.2, 1.0)
-		glHelper.Clear(glHelper.GlColorBufferBit)
-		//gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		if mac_moved == false {
+			x, y := window.GetPos()
 
-		display.Render(glfw.GetTime())
-
-		window.SwapBuffers()
+			window.SetPos(x+1, y)
+			mac_moved = true
+		}
 	}
 
 	return nil

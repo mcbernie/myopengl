@@ -1,8 +1,7 @@
 package objects
 
 import (
-	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
+	"github.com/mcbernie/myopengl/graphic/helper"
 )
 
 const defaultFrag = `
@@ -30,28 +29,24 @@ void main()
 }
 `
 
-func createDefaultShader() (*gfx.Program, error) {
+func createDefaultShader() (*Program, error) {
 
 	// create a shader and put it in the thing here
-	vertShader, err := gfx.NewShader(defaultVert, glHelper.GlVertexShader)
+	vertShader, err := NewShader(defaultVert, helper.GlVertexShader)
 	if err != nil {
 		panic("VertexShader error:" + err.Error())
 	}
 
-	fragShader, err := gfx.NewShader(defaultFrag, glHelper.GlFragmentShader)
+	fragShader, err := NewShader(defaultFrag, helper.GlFragmentShader)
 	if err != nil {
 		panic("FragmentShader error:" + err.Error())
 	}
 
-	program, err := gfx.NewProgram(vertShader, fragShader)
+	program, err := NewProgram(vertShader, fragShader)
 	if err != nil {
 		panic("Program Error:" + err.Error())
 	}
 
 	program.AddUniform("color")
-	/*program.AddUniform("u_projView")
-	program.AddAttribute("position")
-	program.AddAttribute("Color")*/
-
 	return program, nil
 }

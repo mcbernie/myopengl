@@ -1,8 +1,6 @@
 package objects
 
-import (
-	"github.com/mcbernie/myopengl/glHelper"
-)
+import "github.com/mcbernie/myopengl/graphic/helper"
 
 type TextureCleaner struct {
 	handle  uint32
@@ -33,5 +31,5 @@ func (tc *TextureCleaner) RemoveUser() {
 }
 
 func (tc *TextureCleaner) Remove() {
-	glHelper.DeleteTextures(1, &tc.handle)
+	helper.DeleteTextures(1, &tc.handle)
 }

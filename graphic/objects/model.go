@@ -1,8 +1,6 @@
 package objects
 
-import (
-	"github.com/mcbernie/myopengl/glHelper"
-)
+import "github.com/mcbernie/myopengl/graphic/helper"
 
 type Model struct {
 	vao             uint32
@@ -29,10 +27,10 @@ func CreateModel() *Model {
 func CreateModelWithData(indicies []int32, positions []float32) *Model {
 	m := CreateModel()
 	m.bindVAO()
-	m.indiciesBuffer = CreateBuffer(glHelper.GlElementArrayBuffer)
+	m.indiciesBuffer = CreateBuffer(helper.GlElementArrayBuffer)
 	m.writeIndicies(indicies)
 
-	m.positionsBuffer = CreateBuffer(glHelper.GlArrayBuffer)
+	m.positionsBuffer = CreateBuffer(helper.GlArrayBuffer)
 	m.writePositions(positions)
 
 	m.unbindVAO()
@@ -42,13 +40,13 @@ func CreateModelWithData(indicies []int32, positions []float32) *Model {
 func CreateModelWithDataTexture(indicies []int32, positions, texCoords []float32) *Model {
 	m := CreateModel()
 	m.bindVAO()
-	m.indiciesBuffer = CreateBuffer(glHelper.GlElementArrayBuffer)
+	m.indiciesBuffer = CreateBuffer(helper.GlElementArrayBuffer)
 	m.writeIndicies(indicies)
 
-	m.positionsBuffer = CreateBuffer(glHelper.GlArrayBuffer)
+	m.positionsBuffer = CreateBuffer(helper.GlArrayBuffer)
 	m.writePositions(positions)
 
-	m.texcoordsBuffer = CreateBuffer(glHelper.GlArrayBuffer)
+	m.texcoordsBuffer = CreateBuffer(helper.GlArrayBuffer)
 	m.writeTexCoords(texCoords)
 
 	m.unbindVAO()
@@ -59,7 +57,7 @@ func (m *Model) Delete() {
 	m.indiciesBuffer.Delete()
 	m.positionsBuffer.Delete()
 	m.texcoordsBuffer.Delete()
-	glHelper.DeleteVertexArrary(1, &m.vao)
+	helper.DeleteVertexArrary(1, &m.vao)
 }
 
 func (m *Model) SetIndicies(data []int32) {
@@ -97,17 +95,17 @@ func (m *Model) writeTexCoords(data []float32) {
 }
 
 func (m *Model) createVAO() {
-	m.vao = glHelper.GenerateVertexArray(1)
+	m.vao = helper.GenerateVertexArray(1)
 }
 func (m *Model) bindVAO() {
-	glHelper.BindVertexArray(m.vao)
+	helper.BindVertexArray(m.vao)
 }
 func (m *Model) unbindVAO() {
-	glHelper.BindVertexArray(0)
+	helper.BindVertexArray(0)
 }
 
 func (m *Model) Draw() {
-	glHelper.DrawElements(glHelper.GlTriangles, m.vertexCount, glHelper.GlUnsignedInt, glHelper.PtrOffset(0))
+	helper.DrawElements(helper.GlTriangles, m.vertexCount, helper.GlUnsignedInt, helper.PtrOffset(0))
 }
 
 func (m *Model) Bind() {

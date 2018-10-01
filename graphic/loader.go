@@ -38,16 +38,11 @@ func (d *Display) LoadVideoAtRuntime(path, uid string, withDuration float64) {
 	}
 }
 
-//CreateVideoSlide Creates an video slide
-/*func (d *Display) CreateVideoSlide(uid string) (*gfx.Slide, error) {
-	return d.slideshow.CreateNewSlideForVideoFrames(uid)
-}*/
-
 //LoadImagesFromPath load all images from a specified path and put it in slide array
 func (d *Display) LoadImagesFromPath(path string) {
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Fatal Error on LoadImagesFromPath:", err)
 	}
 
 	for _, f := range files {

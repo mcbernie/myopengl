@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
-
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
+
+	"github.com/mcbernie/myopengl/graphic/helper"
+	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 type ImageSlide struct {
@@ -38,7 +38,7 @@ func NewSlideFromImageFile(path, uid string, duration float64) (*ImageSlide, err
 func NewSlideFromRemoteImage(url string, uid string, duration float64) (*ImageSlide, error) {
 
 	ret := make(chan *ImageSlide)
-	glHelper.AddFunction(func() {
+	helper.AddFunction(func() {
 		ret <- newImageSlide(uid)
 	})
 	s := <-ret
@@ -72,7 +72,7 @@ func (s *ImageSlide) LoadImageFromRemote(url string) error {
 
 //LoadImageFromFile Load an image from Path
 func (s *ImageSlide) LoadImageFromFile(path string) error {
-	img, err := gfx.LoadImageFromFile(path)
+	img, err := objects.LoadImageFromFile(path)
 	if err != nil {
 		log.Println("failed to load image from path:" + path)
 		return err
@@ -89,7 +89,7 @@ func (s *ImageSlide) LoadImageFromFile(path string) error {
 func (s *ImageSlide) Update() {
 	s.imageMux.Lock()
 	if s.imageReadyForReplace {
-		s.Tex.SetImage(s.img, glHelper.GlClampToEdge, glHelper.GlClampToEdge)
+		s.Tex.SetImage(s.img, helper.GlClampToEdge, helper.GlClampToEdge)
 		s.imageReadyForReplace = false
 	}
 	s.imageMux.Unlock()

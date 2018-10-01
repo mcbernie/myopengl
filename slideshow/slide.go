@@ -3,7 +3,7 @@ package slideshow
 import (
 	"image"
 
-	"github.com/mcbernie/myopengl/gfx"
+	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 type Slide interface {
@@ -11,7 +11,7 @@ type Slide interface {
 	GetUid() string
 	IsLoading() bool
 
-	Display() *gfx.Texture
+	Display() *objects.Texture
 	Update()
 	Play()
 	SetFrame(img image.Image)

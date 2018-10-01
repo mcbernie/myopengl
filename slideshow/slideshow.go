@@ -5,7 +5,6 @@ import (
 	"math/rand"
 
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/mcbernie/myopengl/glHelper"
 	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
@@ -46,24 +45,14 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 		max, -max, -0.1, //V2
 		max, max, -0.1, //V3
 	}
-	// x, y, z
-	/*verts := []float32{
-		0, 0, 0, //V0
-		0, 768, 0, //V1
-		1024, 768, 0, //V2
-		1024, 0, 0, //V3
-	}*/
 
 	inds := []int32{
 		0, 1, 3,
 		3, 1, 2,
 	}
 
-	//model := loader.LoadToVAO(verts, inds)
 	m := objects.CreateModelWithData(inds, verts)
-	//m := objects.CreateTestModel(model.GetVao(), model.GetVertexCount())
 	entity := objects.MakeEntity(m, mgl32.Vec3{0, 0.0, -0.2}, 0, 0, 0, 1.0)
-	log.Println("GLError:", glHelper.ErrorCheck())
 	s := &Slideshow{
 		SlideShowEntity: entity,
 

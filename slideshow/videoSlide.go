@@ -5,14 +5,14 @@ import (
 	_ "image/jpeg" // Import JPEG Decoding
 	_ "image/png"  // Import PNG Decoding
 
-	"github.com/mcbernie/myopengl/gfx"
-	"github.com/mcbernie/myopengl/glHelper"
+	"github.com/mcbernie/myopengl/graphic/helper"
+	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
 //VideoSlide A Simple VideoSlide element
 type VideoSlide struct {
 	*MediaSlide
-	video *gfx.Video
+	video *objects.Video
 
 	gotNewFrame   chan bool
 	finishedVideo chan bool
@@ -33,7 +33,7 @@ func createVideoSlide(uid string) *VideoSlide {
 //NewSlideForVideo Create a new Slide for Video content
 func NewSlideForVideo(path, uid string) *VideoSlide {
 	vs := createVideoSlide(uid)
-	vs.video = gfx.CreateVideo(path, vs)
+	vs.video = objects.CreateVideo(path, vs)
 	return vs
 }
 
@@ -41,12 +41,12 @@ func NewSlideForVideo(path, uid string) *VideoSlide {
 func NewSlideFromRemoteVideo(url string, uid string, withDuration float64) (*VideoSlide, error) {
 
 	ret := make(chan *VideoSlide)
-	glHelper.AddFunction(func() {
+	helper.AddFunction(func() {
 		ret <- createVideoSlide(uid)
 	})
 	s := <-ret
 	s.delay = withDuration
-	s.video = gfx.CreateVideo(url, s)
+	s.video = objects.CreateVideo(url, s)
 	s.BackgroundThread()
 
 	return s, nil

@@ -1,10 +1,10 @@
 package graphic
 
 import (
-	"github.com/go-gl/gl/v2.1/gl"
-	"github.com/mcbernie/myopengl/features"
-	"github.com/mcbernie/myopengl/gfx"
+	"log"
+
 	"github.com/mcbernie/myopengl/graphic/fonts"
+	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
 	"github.com/mcbernie/myopengl/slideshow"
 )
@@ -14,7 +14,7 @@ type Display struct {
 	windowWidth  float32
 	windowHeight float32
 
-	defaultShader *gfx.Program
+	defaultShader *objects.Program
 	slideshow     *slideshow.Slideshow
 
 	renderer    *objects.Renderer
@@ -23,13 +23,11 @@ type Display struct {
 	entity      *objects.Entity
 	fpsText     *fonts.GUIText
 	font        *fonts.FontType
-	laufschrift *features.LaufschriftObject
+	laufschrift *objects.LaufschriftObject
 	objectsList objects.ObjectsList
 }
 
-var tex *gfx.Texture
-
-//var setSpecialViewPoint func()
+var tex *objects.Texture
 
 //InitDisplay initialize a Display object
 func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuration float64) *Display {
@@ -38,48 +36,65 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 		windowWidth:  float32(windowWidth),
 	}
 
+	//Setup Scoping
+	helper.InitScoping()
+
+	//Init BlendFunction
+	d.EnableBlendFunction()
+
+	log.Print("init loader, renderer and createObjectList...")
 	d.Loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
 	d.objectsList = objects.CreateObjectList(d.renderer)
 
-	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+	log.Print("init Viewport")
+	helper.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
 
-	/**
-		My Testing Area
-	**/
-	/*vertices := []float32{
-		-0.5, 0.5, 0, //V0
-		-0.5, 0.45, 0, //V1
-		-0.4, 0.45, 0, //V2
-		-0.4, 0.5, 0, //V3
-	}
-	indicies := []int32{
-		0, 1, 3, //Top Left triangle (V0, V1, V3)
-		3, 1, 2, //Bottom Right triangle (V3, V1, V2)
-	}*/
-	//model := objects.CreateModelWithData(indicies, vertices)
-	//d.entity = objects.MakeEntity(model, mgl32.Vec3{0, 0, -1.0}, 0, 0, 0, 1.0)
-
+	log.Print("init fonts")
 	fonts.InitTextMaster(d.Loader)
 	d.font = fonts.MakeFontType(d.Loader.LoadTexture("assets/fonts/verdana.png"), "assets/fonts/verdana.fnt")
 
+	log.Print("init slideshow")
 	// SlideShowSpecific
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.Loader)
 	d.slideshow.LoadTransitions("./assets/transitions", d.renderer.GetProjection())
 	elapsed = 0.0
-
 	d.objectsList.AddRenderer(d.slideshow)
 
-	d.laufschrift = features.CreateLaufschrift("Hallo ein sehr kleiner super TEst für mich und mein Freund der .... Hühnerdieb .....!")
+	/*go func() {
+		time.Sleep(5 * time.Second)
+		log.Println("Test laufschirft replacing")
+		d.laufschrift.SetTextSafe("Hallo Mallo")
+	}()*/
+
+	//d.fpsText = fonts.CreateGuiText("init", 0.7, d.font, [2]float32{-1.0, 1.0}, 4, false)
+	d.laufschrift = objects.CreateLaufschrift("Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz")
 	d.objectsList.AddRenderer(d.laufschrift)
+
 	return d
+}
+
+func (d *Display) SetProjection() {
+	helper.MatrixMode(helper.GlProjection)
+	helper.LoadIdentity()
+	helper.Viewport(0, 0, int32(d.windowWidth), int32(d.windowHeight))
+	helper.Ortho(0.0, float64(d.windowWidth), 0.0, float64(d.windowHeight), 0.0, 1.0)
+	helper.MatrixMode(helper.GlModelView)
+	helper.LoadIdentity()
+}
+
+//EnableBlendFunction are required to display alpha in fragmentshaders / ex. Laufschrift
+func (d *Display) EnableBlendFunction() {
+	helper.Enable(helper.GlBlend)
+	helper.BlendFunc(helper.GlSrcAlpha, helper.GlOneMinusSrcAlpha)
 }
 
 //SetWindowSize set new windows size on resize event
 func (d *Display) SetWindowSize(width, height int) {
 	d.windowWidth = float32(width)
 	d.windowHeight = float32(height)
-	gl.Viewport(0, 0, int32(width), int32(height))
+
+	d.SetProjection()
 	d.font.ReplaceMeshCreator()
 }
 
@@ -89,23 +104,25 @@ var frameCount int
 
 //Render make all updates for rendering
 func (d *Display) Render(time float64) {
+	//Run all functions...
+	helper.RunFunctions()
+
 	delta := time - lastTime
 	frameCount++
-
 	if delta >= 1 {
 		fps := float64(frameCount) / delta
 
 		/*d.fpsText.Remove()
 		d.fpsText = fonts.CreateGuiText(fmt.Sprintf("FPS:%.3f", fps), 0.7, d.font, [2]float32{-1.0, 1.0}, 4, false)
-		d.fpsText.SetColourRGB(246, 122, 140)
+		d.fpsText.SetColourRGB(246, 122, 140)*/
 
-		d.entity.SetColourRGB(255, 0, 10, 80)*/
+		/*d.entity.SetColourRGB(255, 0, 10, 80)*/
 		d.laufschrift.SetColor(255, 0, 10)
 		if fps < 60 {
 			//d.fpsText.SetColour(0.8, 0.8, 0.8)
-			d.laufschrift.SetColor(200, 200, 200)
+			//d.laufschrift.SetColor(200, 200, 200)
 			if fps < 30 {
-				d.laufschrift.SetColor(200, 130, 130)
+				//d.laufschrift.SetColor(200, 130, 130)
 				//d.fpsText.SetColour(0.8, 0.5, 0.5)
 			}
 		}
@@ -114,26 +131,15 @@ func (d *Display) Render(time float64) {
 		lastTime = time
 	}
 
-	//d.entity.IncreasePosition(0.09*duration, -0.02*duration, 0)
-	//d.slideshow.SlideShowEntity.IncreasePosition(0.05*duration, -0.02*duration, 0)
-
-	//gl.Viewport(0, 0, int32(d.windowWidth), int32(d.windowHeight))
-	gl.Enable(gl.DEPTH_TEST)
-	gl.ClearColor(0.0, 0, 1.0, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
-	//d.slideshow.Render(time, d.renderer)
-
-	//d.renderer.UseDefaultShader()
-	//d.renderer.RenderEntity(d.entity, d.renderer.Shader)
+	//helper.Enable(helper.GlDepthTest)
+	helper.ClearColor(0.0, 0.5, 1.0, 1.0)
+	helper.Clear(helper.GlColorBufferBit | helper.GlDepthBufferBit)
 
 	d.objectsList.Render(time)
-
 }
 
 //Delete unload all data from gpu
 func (d *Display) Delete() {
 	d.Loader.CleanUP()
 	d.slideshow.CleanUP()
-
 }
