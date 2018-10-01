@@ -46,8 +46,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//m := window.GetMonitor()
-	//log.Println("m:", m)
 
 	if err := helper.Init(); err != nil {
 		panic(err)
@@ -99,14 +97,9 @@ func programLoop(window *glfw.Window) error {
 		display.LoadVideoAtRuntime("assets/video/tr5_event_bally.mp4", "tr5_bally_event", 10)
 	}()*/
 
-	//mw, mh := glfw.GetMonitors()[1].GetPhysicalSize()
-	//log.Println("Monitors: ", mw, " h:", mh)
-
 	defer display.Delete()
-	display.SetProjection()
 
 	mac_moved := false
-
 	for !window.ShouldClose() {
 		display.Render(glfw.GetTime())
 		window.SwapBuffers()
@@ -114,7 +107,6 @@ func programLoop(window *glfw.Window) error {
 
 		if mac_moved == false {
 			x, y := window.GetPos()
-
 			window.SetPos(x+1, y)
 			mac_moved = true
 		}
