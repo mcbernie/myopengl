@@ -1,6 +1,10 @@
 package objects
 
-import "github.com/mcbernie/myopengl/graphic/helper"
+import (
+	"log"
+
+	"github.com/mcbernie/myopengl/graphic/helper"
+)
 
 type Model struct {
 	vao             uint32
@@ -54,9 +58,11 @@ func CreateModelWithDataTexture(indicies []int32, positions, texCoords []float32
 }
 
 func (m *Model) Delete() {
+	log.Println("delete Model...")
 	m.indiciesBuffer.Delete()
 	m.positionsBuffer.Delete()
 	m.texcoordsBuffer.Delete()
+	log.Println("delete VertexArray ", m.vao)
 	helper.DeleteVertexArrary(1, &m.vao)
 }
 

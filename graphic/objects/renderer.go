@@ -91,6 +91,11 @@ func (r *Renderer) GetProjection() [16]float32 {
 	return r.projectionMatrix
 }
 
+func (r *Renderer) SetProjection(width, height float32) {
+	r.projectionMatrix = mgl32.Ortho2D(0.0, width, 0, height)
+	//helper.Ortho(0.0, float64(d.windowWidth), 0.0, float64(d.windowHeight), 0.0, 1.0)
+}
+
 func (r *Renderer) UseDefaultShader() {
 	r.Shader.Use()
 }

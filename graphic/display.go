@@ -51,9 +51,6 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.renderer = objects.MakeRenderer()
 	d.objectsList = objects.CreateObjectList(d.renderer)
 
-	log.Print("init Viewport")
-	//helper.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
-
 	log.Print("init fonts")
 	fonts.InitTextMaster(d.Loader)
 	d.font = fonts.MakeFontType(d.Loader.LoadTexture("assets/fonts/verdana.png"), "assets/fonts/verdana.fnt")
@@ -87,6 +84,7 @@ func (d *Display) SetProjection() {
 	helper.Ortho(0.0, float64(d.windowWidth), 0.0, float64(d.windowHeight), 0.0, 1.0)
 	helper.MatrixMode(helper.GlModelView)
 	helper.LoadIdentity()
+	//d.renderer.SetProjection(d.fbWidth, d.fbHeiht)
 }
 
 func (d *Display) SetKeyCallback(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {

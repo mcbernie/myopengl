@@ -56,16 +56,9 @@ func (l *Loader) LoadToVAOWithTexCoords(positions []float32, indicies []int32, t
 func (l *Loader) UpdateVAO(vao uint32, positions []float32, indicies []int32) {
 	helper.BindVertexArray(vao)
 	defer l.unbindVAO()
-
-	//var vbo uint32
-	//gl.GetIntegerv(gl.ARRAY_BUFFER_BINDING, &vbo)
-	//gl.BindBuffer
-
 }
 
 func (l *Loader) createVAO() uint32 {
-	//log.Println("createVAO??")
-	//debug.PrintStack()
 	vao := helper.GenerateVertexArray(1)
 	l.vaos = append(l.vaos, vao)
 	helper.BindVertexArray(vao)
@@ -85,18 +78,13 @@ func (l *Loader) LoadTexture(filename string) uint32 {
 func (l *Loader) storeDataInAttributeList(attributeNumber uint32, coordinateSize int32, data []float32) {
 
 	vbo := helper.GenBuffers(1)
-	log.Println("storeDateInAttribute VBO:", vbo)
+
 	l.vbos = append(l.vbos, vbo)
-	//gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+
 	helper.BindBuffer(helper.GlArrayBuffer, vbo)
 
-	//gl.BufferData(gl.ARRAY_BUFFER, len(data)*4, gl.Ptr(data), gl.STATIC_DRAW)
 	helper.BufferData(helper.GlArrayBuffer, len(data)*4, helper.Ptr(data), helper.GlStaticDraw)
-	//gl.EnableVertexAttribArray(0)
-	//gl.VertexAttribPointer(attributeNumber, coordinateSize, gl.FLOAT, false, 0, gl.PtrOffset(0))
 	helper.VertexAttribPointer(attributeNumber, coordinateSize, helper.GlFloat, false, 0, helper.PtrOffset(0))
-	//gl.DisableVertexAttribArray(0)
-
 	helper.BindBuffer(helper.GlArrayBuffer, 0)
 }
 
@@ -105,13 +93,11 @@ func (l *Loader) unbindVAO() {
 }
 
 func (l *Loader) bindIndiciesBuffer(indicies []int32) {
-	//var vbo uint32
-	//gl.GenBuffers(1, &vbo)
 	vbo := helper.GenBuffers(1)
 	l.vbos = append(l.vbos, vbo)
-	//gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo)
+
 	helper.BindBuffer(helper.GlElementArrayBuffer, vbo)
-	//gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indicies)*4, gl.Ptr(indicies), gl.STATIC_DRAW)
+
 	helper.BufferData(helper.GlElementArrayBuffer, len(indicies)*4, helper.Ptr(indicies), helper.GlStaticDraw)
 }
 
@@ -120,10 +106,12 @@ func (l *Loader) bindIndiciesBuffer(indicies []int32) {
 //CleanUP delete all VAOS and Buffers from opengl memory
 func (l *Loader) CleanUP() {
 	for _, vao := range l.vaos {
+		log.Println("delete VertexArray ", vao)
 		helper.DeleteVertexArrary(1, &vao)
 	}
 
 	for _, vbo := range l.vbos {
+		log.Println("delete Buffer ", vbo)
 		helper.DeleteBuffer(vbo)
 	}
 

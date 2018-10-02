@@ -1,6 +1,10 @@
 package objects
 
-import "github.com/mcbernie/myopengl/graphic/helper"
+import (
+	"log"
+
+	"github.com/mcbernie/myopengl/graphic/helper"
+)
 
 type modelBufferType struct {
 	bufferType uint32
@@ -21,6 +25,7 @@ func (m modelBufferType) UnBind() {
 	helper.BindBuffer(m.bufferType, 0)
 }
 func (m modelBufferType) Delete() {
+	log.Println("remove modelBuffer:", m.vbo)
 	helper.DeleteBuffer(m.vbo)
 }
 
