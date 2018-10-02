@@ -66,8 +66,13 @@ func programLoop(window *glfw.Window) error {
 
 	width, height := window.GetFramebufferSize()
 	display := graphic.InitDisplay(width, height, delay, duration)
+
+	window.SetPosCallback(func(w *glfw.Window, xpos, ypos int) {
+		display.GlfwCallback(w)
+	})
+
 	window.SetFramebufferSizeCallback(func(w *glfw.Window, width, height int) {
-		display.SetWindowSize(width, height)
+		display.GlfwCallback(w)
 	})
 
 	window.SetKeyCallback(func(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
@@ -76,6 +81,9 @@ func programLoop(window *glfw.Window) error {
 		keyCallback(window, key, scancode, action, mods)
 	})
 
+	window.SetSize(1280, 768)
+
+	display.GlfwCallback(window)
 	display.LoadImagesFromPath("./assets/images")
 
 	go func() {

@@ -15,6 +15,8 @@ import (
 type Display struct {
 	windowWidth  float32
 	windowHeight float32
+	fbWidth      float32
+	fbHeiht      float32
 
 	defaultShader *objects.Program
 	slideshow     *slideshow.Slideshow
@@ -50,7 +52,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	d.objectsList = objects.CreateObjectList(d.renderer)
 
 	log.Print("init Viewport")
-	helper.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+	//helper.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
 
 	log.Print("init fonts")
 	fonts.InitTextMaster(d.Loader)
@@ -81,7 +83,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 func (d *Display) SetProjection() {
 	helper.MatrixMode(helper.GlProjection)
 	helper.LoadIdentity()
-	helper.Viewport(0, 0, int32(d.windowWidth), int32(d.windowHeight))
+	helper.Viewport(0, 0, int32(d.fbWidth), int32(d.fbHeiht))
 	helper.Ortho(0.0, float64(d.windowWidth), 0.0, float64(d.windowHeight), 0.0, 1.0)
 	helper.MatrixMode(helper.GlModelView)
 	helper.LoadIdentity()
@@ -120,9 +122,14 @@ func (d *Display) EnableBlendFunction() {
 }
 
 //SetWindowSize set new windows size on resize event
-func (d *Display) SetWindowSize(width, height int) {
-	d.windowWidth = float32(width)
-	d.windowHeight = float32(height)
+func (d *Display) GlfwCallback(w *glfw.Window) {
+	fbWidth, fbHeight := w.GetFramebufferSize()
+	winWidth, winHeight := w.GetSize()
+
+	d.windowWidth = float32(winWidth)
+	d.windowHeight = float32(winHeight)
+	d.fbWidth = float32(fbWidth)
+	d.fbHeiht = float32(fbHeight)
 
 	d.SetProjection()
 	d.font.ReplaceMeshCreator()

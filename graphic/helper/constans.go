@@ -21,6 +21,7 @@ const (
 	GlLinearMipmapLinear = gl.LINEAR_MIPMAP_LINEAR
 	GlTextureLodBias     = gl.TEXTURE_LOD_BIAS
 	GlLinear             = gl.LINEAR
+	GlNearest            = gl.NEAREST
 
 	//GlTexture0 all Textures..
 	GlTexture0 = gl.TEXTURE0

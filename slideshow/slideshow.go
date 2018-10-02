@@ -129,7 +129,9 @@ func (s *Slideshow) Render(renderer *objects.Renderer, time float64) {
 
 	transition.Draw(float32(progress),
 		from.Display(),
-		to.Display())
+		to.Display(),
+		renderer.GetProjection(),
+	)
 
 	//begin render Entity after all shader processing is done!
 	renderer.RenderEntity(s.SlideShowEntity, transition.Shader)

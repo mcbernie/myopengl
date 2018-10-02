@@ -127,8 +127,6 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection 
 	program.AddUniform("_fromR")
 	program.AddUniform("_toR")
 
-	helper.UniformMatrix4(program.GetUniform("projectionMatrix"), projection)
-
 	program.UnUse()
 	return &Transition{
 		Shader: program,
@@ -138,7 +136,7 @@ func MakeTransition(resizeMode ResizeMode, glsl string, name string, projection 
 }
 
 //Draw draws a transition
-func (transition *Transition) Draw(progress float32, from *objects.Texture, to *objects.Texture /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
+func (transition *Transition) Draw(progress float32, from *objects.Texture, to *objects.Texture, projection [16]float32 /*, width float32, height float32*/ /*, params map[string]interface{}*/) {
 	shader := transition.Shader
 	shader.Use()
 	//glHelper.Uniform1f(shader.GetUniform("ratio"), width/height)
@@ -146,6 +144,8 @@ func (transition *Transition) Draw(progress float32, from *objects.Texture, to *
 
 	from.Bind(0)
 	to.Bind(1)
+
+	helper.UniformMatrix4(shader.GetUniform("projectionMatrix"), projection)
 	helper.Uniform1i(shader.GetUniform("from"), 0)
 	helper.Uniform1i(shader.GetUniform("to"), 1)
 	helper.Uniform1i(shader.GetUniform("_fromR"), from.Width/from.Height)
