@@ -2,6 +2,7 @@ package graphic
 
 import (
 	"log"
+	"time"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/graphic/fonts"
@@ -62,11 +63,11 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	elapsed = 0.0
 	d.objectsList.AddRenderer(d.slideshow)
 
-	/*go func() {
+	go func() {
 		time.Sleep(5 * time.Second)
 		log.Println("Test laufschirft replacing")
 		d.laufschrift.SetTextSafe("Hallo Mallo")
-	}()*/
+	}()
 
 	//d.fpsText = fonts.CreateGuiText("init", 0.7, d.font, [2]float32{-1.0, 1.0}, 4, false)
 	d.laufschrift = objects.CreateLaufschrift(
@@ -146,7 +147,7 @@ func (d *Display) Render(time float64) {
 		d.fpsText.SetColourRGB(246, 122, 140)*/
 
 		/*d.entity.SetColourRGB(255, 0, 10, 80)*/
-		d.laufschrift.SetColor(255, 0, 10)
+		d.laufschrift.SetColor(0, 0, 0)
 		if fps < 60 {
 			//d.fpsText.SetColour(0.8, 0.8, 0.8)
 			//d.laufschrift.SetColor(200, 200, 200)
