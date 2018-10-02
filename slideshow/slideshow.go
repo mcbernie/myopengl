@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
 )
 
@@ -46,12 +47,20 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 		max, max, -0.1, //V3
 	}
 
+	uvs := []float32{
+		0, 1, //V0 (x,y)
+		0, 0, //V1 (x,y)
+		1, 0, //V2 (x,y)
+		1, 1, //V3 (x,y)
+	}
+
 	inds := []int32{
 		0, 1, 3,
 		3, 1, 2,
 	}
 
-	m := objects.CreateModelWithData(inds, verts)
+	//m := objects.CreateModelWithData(inds, verts)
+	m := objects.CreateModelWithDataTexture(inds, verts, uvs)
 	entity := objects.MakeEntity(m, mgl32.Vec3{0, 0.0, -0.2}, 0, 0, 0, 1.0)
 	s := &Slideshow{
 		SlideShowEntity: entity,
@@ -132,9 +141,15 @@ func (s *Slideshow) Render(renderer *objects.Renderer, time float64) {
 		to.Display(),
 		renderer.GetProjection(),
 	)
-
+	if err := helper.ErrorCheck(); err != "" {
+		log.Println(err)
+	}
 	//begin render Entity after all shader processing is done!
 	renderer.RenderEntity(s.SlideShowEntity, transition.Shader)
+	if err := helper.ErrorCheck(); err != "" {
+		log.Println(err)
+	}
+
 }
 
 var lastIndex int
@@ -146,7 +161,6 @@ func (s *Slideshow) setIndexSlides(aviableSlides int) {
 	next := current + 1
 
 	if next >= aviableSlides {
-		log.Println("Überlaufschutz....")
 		next = 0
 	}
 
@@ -196,6 +210,18 @@ func (s *Slideshow) onlyAviableSlides() []Slide {
 	}
 
 	return r
+}
+
+func (s *Slideshow) SetDuration(duration int32) {
+	s.duration = float64(duration)
+}
+
+func (s *Slideshow) GetDuration() int32 {
+	return int32(s.duration)
+}
+
+func (s *Slideshow) SetDelay(delay int32) {
+	s.delay = float64(delay)
 }
 
 //CleanUP remove all transitions and all slides from memory

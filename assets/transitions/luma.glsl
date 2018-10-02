@@ -7,6 +7,6 @@ vec4 transition(vec2 uv) {
   return mix(
     getToColor(uv),
     getFromColor(uv),
-    step(progress, texture2D(luma, uv).r)
+    step(progress, texture(luma, uv).r)
   );
 }

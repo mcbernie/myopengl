@@ -9,8 +9,11 @@ import (
 )
 
 const fragementShaderTemplate = `
-#version 120
-varying vec2 _uv;
+#version 150
+
+in vec2 _uv;
+out vec4 fragColor;
+
 uniform sampler2D from;
 uniform sampler2D to;
 uniform float progress;
@@ -19,17 +22,17 @@ uniform float _fromR;
 uniform float _toR;
 
 vec4 getFromColor(vec2 uv) {
-  return texture2D(from, %s);
+  return texture(from, %s);
 }
 
 vec4 getToColor(vec2 uv) {
-  return texture2D(to, %s);
+  return texture(to, %s);
 }
 
 %s
 
 void main() {
-  gl_FragColor = transition(_uv);
+  fragColor = transition(_uv);
 }
 `
 
@@ -59,17 +62,18 @@ const (
 
 const (
 	vert = `
-	#version 120
-	attribute vec2 position;
-	varying vec2 _uv;
+	#version 150
+	in vec2 position;
+	out vec2 _uv;
 
 	uniform mat4 transformationMatrix;
 	uniform mat4 projectionMatrix;
 
 	void main() {
-	gl_Position = projectionMatrix * transformationMatrix * vec4(position,0.0,1.0);
-	vec2 uv = position * 0.5 + 0.5;
-	_uv = vec2(uv.x, 1.0 - uv.y);
+		gl_Position = projectionMatrix * transformationMatrix * vec4(position,0.0,1.0);
+		//gl_Position = projectionMatrix * transformationMatrix * vec4(position * vec2(1.0, -1.0),1.0,1.0);
+		vec2 uv = position * 0.5 + 0.5;
+		_uv = vec2(uv.x, 1.0 - uv.y);
 	}`
 )
 
@@ -150,11 +154,11 @@ func (transition *Transition) Draw(progress float32, from *objects.Texture, to *
 	helper.Uniform1i(shader.GetUniform("to"), 1)
 	helper.Uniform1i(shader.GetUniform("_fromR"), from.Width/from.Height)
 	helper.Uniform1i(shader.GetUniform("_toR"), to.Width/to.Height)
-	// other...
-	//shader.Delete()
+
 }
 
 //Delete remove shader program from memory
 func (transition *Transition) CleanUP() {
+
 	transition.Shader.Delete()
 }

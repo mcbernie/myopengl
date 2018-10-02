@@ -3,13 +3,10 @@ package objects
 import (
 	"image"
 	"image/draw"
-	"image/png"
 	"io/ioutil"
 	"log"
-	"os"
 	"strings"
 
-	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
@@ -67,8 +64,8 @@ func (l *LaufschriftObject) SetTextSafe(text string) {
 	helper.AddFunction(func() {
 		l.texture.SetDefaultImage(l.image)
 		l.texture.Bind(0)
-		helper.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-		helper.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE)
+		helper.TexParameteri(helper.GlTexture2D, helper.GlTextureWrapS, helper.GlRepeat)
+		helper.TexParameteri(helper.GlTexture2D, helper.GlTextureWrapR, helper.GlClampToEdge)
 		l.texture.UnBind()
 		l.UpdateEntity()
 	})
@@ -155,8 +152,8 @@ func CreateLaufschrift(text string, x, y, width, height float32) *LaufschriftObj
 	l.SetText(text)
 
 	l.texture.Bind(0)
-	helper.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	helper.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE)
+	helper.TexParameteri(helper.GlTexture2D, helper.GlTextureWrapS, helper.GlRepeat)
+	helper.TexParameteri(helper.GlTexture2D, helper.GlTextureWrapR, helper.GlClampToEdge)
 	l.texture.UnBind()
 
 	l.UpdateEntity()
@@ -260,14 +257,14 @@ func addLabel(label string) image.Image {
 		}
 	}
 
-	outputFile, err := os.Create("test1.png")
+	/*outputFile, err := os.Create("test1.png")
 	if err != nil {
 		// Handle error
 		log.Println("ERROR:", err)
 	}
 
 	png.Encode(outputFile, rgba)
-	outputFile.Close()
+	outputFile.Close()*/
 
 	return rgba
 }

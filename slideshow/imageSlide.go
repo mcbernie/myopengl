@@ -89,7 +89,13 @@ func (s *ImageSlide) LoadImageFromFile(path string) error {
 func (s *ImageSlide) Update() {
 	s.imageMux.Lock()
 	if s.imageReadyForReplace {
+		if err := helper.ErrorCheck(); err != "" {
+			log.Println("before:", err)
+		}
 		s.Tex.SetImage(s.img, helper.GlClampToEdge, helper.GlClampToEdge)
+		if err := helper.ErrorCheck(); err != "" {
+			log.Println("after", err)
+		}
 		s.imageReadyForReplace = false
 	}
 	s.imageMux.Unlock()

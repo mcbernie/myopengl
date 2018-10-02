@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/graphic/fonts"
+	"github.com/mcbernie/myopengl/graphic/gui"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
 	"github.com/mcbernie/myopengl/slideshow"
@@ -18,6 +19,8 @@ type Display struct {
 	fbWidth      float32
 	fbHeiht      float32
 
+	window *glfw.Window
+
 	defaultShader *objects.Program
 	slideshow     *slideshow.Slideshow
 
@@ -29,16 +32,23 @@ type Display struct {
 	font        *fonts.FontType
 	laufschrift *objects.LaufschriftObject
 	objectsList objects.ObjectsList
+
+	gui *gui.GuiSystem
 }
 
 var tex *objects.Texture
 
 //InitDisplay initialize a Display object
-func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuration float64) *Display {
+func InitDisplay(window *glfw.Window, defaultDelay, defaultDuration float64) *Display {
+
+	windowWidth, windowHeight := window.GetFramebufferSize()
 	d := &Display{
-		windowHeight: float32(windowHeight),
 		windowWidth:  float32(windowWidth),
+		windowHeight: float32(windowHeight),
+		window:       window,
 	}
+
+	d.GlfwCallback(window)
 
 	//Setup Scoping
 	helper.InitScoping()
@@ -49,6 +59,7 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 	log.Print("init loader, renderer and createObjectList...")
 	d.Loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
+
 	d.objectsList = objects.CreateObjectList(d.renderer)
 
 	log.Print("init fonts")
@@ -68,23 +79,16 @@ func InitDisplay(windowWidth int, windowHeight int, defaultDelay, defaultDuratio
 		d.laufschrift.SetTextSafe("Hallo Mallo")
 	}()
 
-	//d.fpsText = fonts.CreateGuiText("init", 0.7, d.font, [2]float32{-1.0, 1.0}, 4, false)
 	d.laufschrift = objects.CreateLaufschrift(
 		"Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz",
 		-0.8, -0.8, 1.6, 0.2)
 	d.objectsList.AddRenderer(d.laufschrift)
 
-	return d
-}
+	d.gui = gui.CreateGui(d.window)
+	d.gui.SetDuration(d.slideshow.GetDuration())
+	d.objectsList.AddRenderer(d.gui)
 
-func (d *Display) SetProjection() {
-	helper.MatrixMode(helper.GlProjection)
-	helper.LoadIdentity()
-	helper.Viewport(0, 0, int32(d.fbWidth), int32(d.fbHeiht))
-	helper.Ortho(0.0, float64(d.windowWidth), 0.0, float64(d.windowHeight), 0.0, 1.0)
-	helper.MatrixMode(helper.GlModelView)
-	helper.LoadIdentity()
-	//d.renderer.SetProjection(d.fbWidth, d.fbHeiht)
+	return d
 }
 
 func (d *Display) SetKeyCallback(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
@@ -130,7 +134,10 @@ func (d *Display) GlfwCallback(w *glfw.Window) {
 	d.fbHeiht = float32(fbHeight)
 
 	d.SetProjection()
-	d.font.ReplaceMeshCreator()
+}
+
+func (d *Display) SetProjection() {
+	helper.Viewport(0, 0, int32(d.fbWidth), int32(d.fbHeiht))
 }
 
 var elapsed float64
@@ -139,8 +146,6 @@ var frameCount int
 
 //Render make all updates for rendering
 func (d *Display) Render(time float64) {
-	//Run all functions...
-	helper.RunFunctions()
 
 	delta := time - lastTime
 	frameCount++
@@ -152,7 +157,7 @@ func (d *Display) Render(time float64) {
 		d.fpsText.SetColourRGB(246, 122, 140)*/
 
 		/*d.entity.SetColourRGB(255, 0, 10, 80)*/
-		d.laufschrift.SetColor(0, 0, 0)
+		//d.laufschrift.SetColor(0, 0, 0)
 		if fps < 60 {
 			//d.fpsText.SetColour(0.8, 0.8, 0.8)
 			//d.laufschrift.SetColor(200, 200, 200)
@@ -166,15 +171,28 @@ func (d *Display) Render(time float64) {
 		lastTime = time
 	}
 
-	//helper.Enable(helper.GlDepthTest)
-	helper.ClearColor(0.0, 0.5, 1.0, 1.0)
-	helper.Clear(helper.GlColorBufferBit | helper.GlDepthBufferBit)
+	helper.Viewport(0, 0, int32(d.fbWidth), int32(d.fbHeiht))
 
+	helper.ClearColor(0.0, 0.2, 1.0, 1.0)
+	helper.Clear(helper.GlColorBufferBit)
+	helper.RunFunctions()
+
+	if pause := d.gui.GetPause(); pause > 0 && pause < 50 {
+		d.slideshow.SetDelay(pause)
+	}
+	if duration := d.gui.GetDuration(); duration > 0 && duration < 50 {
+		d.slideshow.SetDuration(duration)
+	}
+
+	//Run object list
 	d.objectsList.Render(time)
+
+	//d.laufschrift.Render(d.renderer, time)
 }
 
 //Delete unload all data from gpu
 func (d *Display) Delete() {
 	d.Loader.CleanUP()
 	d.slideshow.CleanUP()
+	d.gui.Delete()
 }

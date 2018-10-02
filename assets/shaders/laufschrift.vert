@@ -1,9 +1,9 @@
-#version 120
+#version 150
 	
-attribute vec2 position;
-attribute vec2 texCoord;
+in vec2 position;
+in vec2 texCoord;
 
-varying vec2 _uv;
+out vec2 _uv;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;

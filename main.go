@@ -5,9 +5,6 @@ import (
 	"runtime"
 	"time"
 
-	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
-
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/graphic"
 	"github.com/mcbernie/myopengl/graphic/helper"
@@ -39,8 +36,10 @@ func main() {
 	defer glfw.Terminate()
 
 	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 2)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 2)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
 	window, err := objects.CreateWindow(windowWidth, windowHeight, "SlideShow Test")
 	if err != nil {
@@ -50,9 +49,6 @@ func main() {
 	if err := helper.Init(); err != nil {
 		panic(err)
 	}
-
-	log.Println("OpenGL Version:", gl.GoStr(gl.GetString(gl.VERSION)))
-	log.Println("OpenGL Shading Version:", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 
 	window.MakeContextCurrent()
 
@@ -64,8 +60,7 @@ func main() {
 
 func programLoop(window *glfw.Window) error {
 
-	width, height := window.GetFramebufferSize()
-	display := graphic.InitDisplay(width, height, delay, duration)
+	display := graphic.InitDisplay(window, delay, duration)
 
 	window.SetPosCallback(func(w *glfw.Window, xpos, ypos int) {
 		display.GlfwCallback(w)
@@ -83,7 +78,6 @@ func programLoop(window *glfw.Window) error {
 
 	window.SetSize(1280, 768)
 
-	display.GlfwCallback(window)
 	display.LoadImagesFromPath("./assets/images")
 
 	go func() {
@@ -112,17 +106,17 @@ func programLoop(window *glfw.Window) error {
 
 	defer display.Delete()
 
-	mac_moved := false
+	//mac_moved := false
 	for !window.ShouldClose() {
 		display.Render(glfw.GetTime())
 		window.SwapBuffers()
 		glfw.PollEvents()
 
-		if mac_moved == false {
+		/*if mac_moved == false {
 			x, y := window.GetPos()
 			window.SetPos(x+1, y)
 			mac_moved = true
-		}
+		}*/
 	}
 
 	return nil

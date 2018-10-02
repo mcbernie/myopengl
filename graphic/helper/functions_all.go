@@ -6,7 +6,8 @@ import (
 	"unsafe"
 
 	//"github.com/go-gl/gl/v4.1-core/gl" // OR:
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/gl/v3.2-core/gl"
+	//"github.com/go-gl/gl/v2.1/gl"
 
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -282,13 +283,13 @@ func Viewport(x, y, width, height int32) {
 }
 
 func Ortho(left, right, bottom, top, zNear, zFar float64) {
-	gl.Ortho(left, right, bottom, top, zNear, zFar)
+	//gl.Ortho(left, right, bottom, top, zNear, zFar)
 }
 
 func LoadIdentity() {
-	gl.LoadIdentity()
+	//gl.LoadIdentity()
 }
 
 func MatrixMode(mode uint32) {
-	gl.MatrixMode(mode)
+	//gl.MatrixMode(mode)
 }

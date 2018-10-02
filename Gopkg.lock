@@ -10,7 +10,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/go-gl/gl"
-  packages = ["v2.1/gl"]
+  packages = ["v2.1/gl","v3.2-core/gl"]
   revision = "68e2537930806bfcee1b92a0e14b4e9b8bb3a3e3"
 
 [[projects]]
@@ -27,6 +27,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/golang-ui/nuklear"
+  packages = ["nk"]
+  revision = "4cfd78fa959792703073c66edb2bd18064245ffa"
+
+[[projects]]
+  branch = "master"
   name = "github.com/golang/freetype"
   packages = [".","raster","truetype"]
   revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
@@ -36,6 +42,18 @@
   packages = ["."]
   revision = "5b67d428864e92711fcbd2f8629456121a56d91f"
   version = "v1.2.1"
+
+[[projects]]
+  name = "github.com/veandco/go-sdl2"
+  packages = ["sdl"]
+  revision = "271d2ec43388932fd2a80f4c2e81021734685a62"
+  version = "v0.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/xlab/android-go"
+  packages = ["android","egl","gles2","gles3"]
+  revision = "ebf4d6dd1830d02eccda51fa12d4c7c57fc0e851"
 
 [[projects]]
   name = "gocv.io/x/gocv"
@@ -52,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8b936e63de699e257405d5e0cf687a7291cb8139d3092d7a54a85447455d9108"
+  inputs-digest = "460fc34a0aef2c89c3e0bde01d7a4c9523ce8ae63e21d6798fcce1f726298ca1"
   solver-name = "gps-cdcl"
   solver-version = 1

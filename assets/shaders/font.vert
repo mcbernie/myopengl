@@ -1,9 +1,9 @@
-#version 120
+#version 150
 
-attribute vec2 position;
-attribute vec2 textureCoords;
+in vec2 position;
+in vec2 textureCoords;
 
-varying vec2 pass_textureCoords;
+out vec2 pass_textureCoords;
 
 uniform vec2 translation;
 

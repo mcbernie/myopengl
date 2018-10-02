@@ -1,7 +1,8 @@
 package helper
 
 import (
-	"github.com/go-gl/gl/v2.1/gl"
+	//"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/gl/v3.2-core/gl"
 )
 
 const (
@@ -53,6 +54,8 @@ const (
 
 	GlStaticDraw = gl.STATIC_DRAW
 
-	GlProjection = gl.PROJECTION
-	GlModelView  = gl.MODELVIEW
+	GlProjection = 100 //gl.PROJECTION
+	GlModelView  = 101 //gl.MODELVIEW
+
+	GlRepeat = gl.REPEAT
 )

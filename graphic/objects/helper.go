@@ -5,19 +5,21 @@ import (
 )
 
 const defaultFrag = `
-#version 120
-//varying vec4 vColor;
+#version 150
+
+out vec4 fragColor;
 uniform vec4 color;
+
 void main()
 {
-  gl_FragColor = color;
+  fragColor = color;
 }
 `
 
 const defaultVert = `
-#version 120
+#version 150
 
-attribute vec4 position;
+in vec4 position;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;

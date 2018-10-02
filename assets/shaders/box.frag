@@ -1,7 +1,9 @@
-#version 120
+#version 150
 
 uniform vec4 color;
-varying vec2 _uv;
+in vec2 _uv;
+
+out vec4 fragColor;
 
 uniform sampler2D tex;
 
@@ -28,5 +30,5 @@ void main(void) {
         processAxis(_uv.y, u_border.y, u_dimensions.y)
     );
 
-    gl_FragColor = texture2D(tex,newUV);
+    fragColor = texture(tex,newUV);
 }

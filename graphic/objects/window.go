@@ -1,8 +1,6 @@
 package objects
 
 import (
-	"log"
-
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -24,7 +22,7 @@ func CreateWindow(width, height int, title string) (*glfw.Window, error) {
 	win.SetMonitor(m, 0, 0, width, height, 60)
 	log.Println("m1:", m)*/
 
-	win.SetPosCallback(func(w *glfw.Window, xPos int, yPos int) {
+	/*win.SetPosCallback(func(w *glfw.Window, xPos int, yPos int) {
 		log.Println("move window: x:", xPos, " y:", yPos)
 		mons := glfw.GetMonitors()
 		mon0x, mon0y := mons[0].GetPos()
@@ -34,7 +32,7 @@ func CreateWindow(width, height int, title string) (*glfw.Window, error) {
 		log.Println("dpi mon1:", getDPI(mons[1], w))
 		log.Println("mon0x:", mon0x, " mon0y:", mon0y)
 		log.Println("mon1x:", mon1x, " mon1y:", mon1y)
-	})
+	})*/
 
 	globalWindow = win
 

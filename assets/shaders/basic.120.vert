@@ -1,4 +1,7 @@
-#version 120
+#version 150
+
+in vec4 gl_Vertex;
+out vec4 gl_Position;
 
 void main()
 {

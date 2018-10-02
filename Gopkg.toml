@@ -1,3 +1,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/go-gl/gl"
+
+[[constraint]]
+  name = "github.com/golang-ui/nuklear/nk"
+  tags = "opengl2
