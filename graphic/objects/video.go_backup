@@ -8,8 +8,7 @@ import (
 	"time"
 
 	"github.com/3d0c/gmf"
-
-	"gocv.io/x/gocv"
+	//"gocv.io/x/gocv"
 )
 
 type VideoSlideInterface interface {
@@ -19,7 +18,7 @@ type VideoSlideInterface interface {
 
 //Video Simple Video structure
 type Video struct {
-	device *gocv.VideoCapture
+	//device *gocv.VideoCapture
 
 	//decoding
 	decFmt    *gmf.FmtCtx
@@ -182,23 +181,23 @@ func (v *Video) GetFrame() (image.Image, error) {
 
 //InitVideo Initialize Video Streaming
 func InitVideo() *Video {
-	webcam, _ := gocv.VideoCaptureDevice(0)
+	//webcam, _ := gocv.VideoCaptureDevice(0)
 
 	return &Video{
-		device: webcam,
+		//device: webcam,
 	}
 }
 
 func InitVideoFromFile() *Video {
-	v, _ := gocv.VideoCaptureFile("/users/nico/Downloads/e0f162aabe867186e61dd087825ebaef_asset.mp4")
+	//v, _ := gocv.VideoCaptureFile("/users/nico/Downloads/e0f162aabe867186e61dd087825ebaef_asset.mp4")
 
 	return &Video{
-		device: v,
+		//device: v,
 	}
 }
 
 //Delete Close the current streaming Device
 func (video *Video) Delete() {
-	video.device.Close()
-
+	//video.device.Close()
+	log.Println("delete video... (NOT IMPLEMENTED!!")
 }
