@@ -105,7 +105,6 @@ func (s *Slideshow) Render(renderer *objects.Renderer, time float64) {
 		progress = currentDuration / s.duration
 
 		if progress >= 1 {
-			// animation ist abgeschlossen jetzt gilt der delay!
 			progress = 0.0      // Progress zurücksetzen
 			currentDuration = 0 // dauer zurücksetzen
 
@@ -228,7 +227,7 @@ func (s *Slideshow) SetDelay(delay int32) {
 }
 
 //CleanUP remove all transitions and all slides from memory
-func (s *Slideshow) CleanUP() {
+func (s *Slideshow) Delete() {
 
 	for _, transition := range s.transitions {
 		transition.CleanUP()
@@ -238,5 +237,5 @@ func (s *Slideshow) CleanUP() {
 		slide.CleanUP()
 	}
 
-	s.SlideShowEntity.Model.Delete()
+	s.SlideShowEntity.Delete()
 }

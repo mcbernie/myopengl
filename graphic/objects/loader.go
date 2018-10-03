@@ -10,7 +10,7 @@ import (
 )
 
 //Loader holds all vaos and vbos handler for cleanup and access
-// Helper Generating VAO by calling of LoadToVAO
+//Helper Generating VAO by calling of LoadToVAO
 type Loader struct {
 	vaos     []uint32
 	vbos     []uint32
@@ -68,7 +68,6 @@ func (l *Loader) createVAO() uint32 {
 
 //LoadTexture Loads an Texture returns the handle
 func (l *Loader) LoadTexture(filename string) uint32 {
-	log.Println("LoadTexture...:", filename)
 	tex := NewTextureFromFile(filename)
 	handle := tex.GetHandle()
 	l.textures = append(l.textures, CreateTextureCleaner(filename, handle))
