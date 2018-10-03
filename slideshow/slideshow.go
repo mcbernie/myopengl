@@ -81,11 +81,12 @@ func MakeSlideshow(defaultDelay, defaultDuration float64, loader *objects.Loader
 var previousTime float64
 var progress float64
 
-//var index int
+/*
+* need to optimized... all var's outside ?!
+ */
 var currentDuration float64
 var pause bool
 var delayForTransition float64
-
 var from, to Slide
 var transition *Transition
 var transitionId int
@@ -110,7 +111,9 @@ func (s *Slideshow) Render(renderer *objects.Renderer, time float64) {
 
 			pause = true // pause aktivieren
 
-			log.Println("in pause mode, currently shows:", to.GetUid())
+			if to != nil {
+				log.Println("in pause mode, currently shows:", to.GetUid())
+			}
 			s.setIndexSlides(len(aviableSlides))
 		}
 
