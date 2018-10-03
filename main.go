@@ -9,8 +9,7 @@ import (
 	"github.com/mcbernie/myopengl/graphic"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
-
-	"github.com/pkg/profile"
+	//"github.com/pkg/profile"
 )
 
 const windowWidth = 800
@@ -28,7 +27,7 @@ func main() {
 	//cpu profiling
 	//defer profile.Start().Stop()
 	//mem profiling
-	defer profile.Start(profile.MemProfile).Stop()
+	//defer profile.Start(profile.MemProfile).Stop()
 
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to inifitialize glfw:", err)
@@ -47,7 +46,7 @@ func main() {
 	}
 
 	if err := helper.Init(); err != nil {
-		panic(err)
+		panic("OpenGL 3.2 Core wird nicht unterstützt!")
 	}
 
 	window.MakeContextCurrent()

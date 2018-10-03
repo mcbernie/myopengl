@@ -16,7 +16,7 @@ func (d *Display) LoadLocalImage(path string, uid string) {
 	d.slideshow.CreateNewSlideFromImageFile(path, uid, 5.0)
 }
 
-func (d *Display) LoadVideo(path string, uid string) {
+/*func (d *Display) LoadVideo(path string, uid string) {
 	log.Println("Load a Video:", uid)
 
 	slide, err := d.slideshow.CreateNewSlideForVideo(path, uid)
@@ -27,16 +27,16 @@ func (d *Display) LoadVideo(path string, uid string) {
 		slide.BackgroundThread()
 	}
 
-}
+}*/
 
-func (d *Display) LoadVideoAtRuntime(path, uid string, withDuration float64) {
+/*func (d *Display) LoadVideoAtRuntime(path, uid string, withDuration float64) {
 	log.Println("Load a Video At Runtime:", uid)
 
 	_, err := d.slideshow.CreateNewSlideForVideoRemote(path, uid, withDuration)
 	if err != nil {
 		log.Println("Error on Load Slide")
 	}
-}
+}*/
 
 //LoadImagesFromPath load all images from a specified path and put it in slide array
 func (d *Display) LoadImagesFromPath(path string) {

@@ -44,26 +44,6 @@ func (s *Slideshow) AppendNewSlideFromRemote(url string, uid string) {
 	})
 }
 
-//CreateNewSlideForVideo create a new Slide for Video frames...
-func (s *Slideshow) CreateNewSlideForVideo(path, uid string) (Slide, error) {
-	slide := NewSlideForVideo(path, uid)
-	s.slides = append(s.slides, slide)
-	return slide, nil
-
-}
-
-//CreateNewSlideForVideoRemote create a new slide from a image url
-func (s *Slideshow) CreateNewSlideForVideoRemote(url, uid string, withDuration float64) (Slide, error) {
-	slide, err := NewSlideFromRemoteVideo(url, uid, withDuration)
-
-	if err != nil {
-		return nil, err
-	}
-
-	s.slides = append(s.slides, slide)
-	return slide, nil
-}
-
 //LoadImageFromRemote take currentslide an load new image
 /*func (s *Slideshow) LoadImageFromRemote(url string) {
 	go func() {

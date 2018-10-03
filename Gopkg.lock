@@ -3,12 +3,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/3d0c/gmf"
-  packages = ["."]
-  revision = "feddda3ca02375a63362bfa8000fa1ad6e6861d1"
-
-[[projects]]
-  branch = "master"
   name = "github.com/go-gl/gl"
   packages = ["v2.1/gl","v3.2-core/gl"]
   revision = "68e2537930806bfcee1b92a0e14b4e9b8bb3a3e3"
@@ -56,12 +50,6 @@
   revision = "ebf4d6dd1830d02eccda51fa12d4c7c57fc0e851"
 
 [[projects]]
-  name = "gocv.io/x/gocv"
-  packages = ["."]
-  revision = "09994446aec439b74e48f97f777026cc47a6fe14"
-  version = "0.13.1"
-
-[[projects]]
   branch = "master"
   name = "golang.org/x/image"
   packages = ["font","math/f32","math/fixed"]
@@ -70,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "460fc34a0aef2c89c3e0bde01d7a4c9523ce8ae63e21d6798fcce1f726298ca1"
+  inputs-digest = "850af4db086a76cc5aa9be9bef0d8ec17067d6e071ddda8c652599278793a12a"
   solver-name = "gps-cdcl"
   solver-version = 1

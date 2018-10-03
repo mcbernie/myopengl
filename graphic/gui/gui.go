@@ -44,9 +44,14 @@ type GuiSystem struct {
 	currentDuration float64
 	font            *nk.Font
 	fontHandle      *nk.UserFont
+	visible         bool
 }
 
 func (gui *GuiSystem) Render(r *objects.Renderer, deltaTime float64) {
+	if gui.visible != true {
+		return
+	}
+
 	nk.NkPlatformNewFrame()
 	nk.NkStylePushFont(gui.ctx, gui.fontHandle)
 
@@ -132,6 +137,7 @@ func CreateGui(win *glfw.Window) *GuiSystem {
 			delay_bytes:    []byte{0, 64},
 			delay_len:      0,
 		},
+		visible: false,
 	}
 
 	atlas := nk.NewFontAtlas()
@@ -167,6 +173,14 @@ func (gui *GuiSystem) SetDuration(duration int32) {
 
 	gui.state.duration_bytes = b
 	gui.state.duration_len = int32(len(s))
+}
+
+func (gui *GuiSystem) SetVisible(visible bool) {
+	gui.visible = visible
+}
+
+func (gui *GuiSystem) ToggleVisible() {
+	gui.visible = !gui.visible
 }
 
 func b(v int32) bool {

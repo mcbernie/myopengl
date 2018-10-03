@@ -2,7 +2,6 @@ package graphic
 
 import (
 	"log"
-	"time"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/graphic/fonts"
@@ -73,16 +72,16 @@ func InitDisplay(window *glfw.Window, defaultDelay, defaultDuration float64) *Di
 	elapsed = 0.0
 	d.objectsList.AddRenderer(d.slideshow)
 
-	go func() {
+	/*go func() {
 		time.Sleep(5 * time.Second)
 		log.Println("Test laufschirft replacing")
 		d.laufschrift.SetTextSafe("Hallo Mallo")
-	}()
+	}()*/
 
-	d.laufschrift = objects.CreateLaufschrift(
-		"Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz",
-		-0.8, -0.8, 1.6, 0.2)
-	d.objectsList.AddRenderer(d.laufschrift)
+	/*d.laufschrift = objects.CreateLaufschrift(
+	"Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz",
+	-0.8, -0.8, 1.6, 0.2)*/
+	//d.objectsList.AddRenderer(d.laufschrift)
 
 	d.gui = gui.CreateGui(d.window)
 	d.gui.SetDuration(d.slideshow.GetDuration())
@@ -93,26 +92,30 @@ func InitDisplay(window *glfw.Window, defaultDelay, defaultDuration float64) *Di
 
 func (d *Display) SetKeyCallback(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 
-	step := 0.01
+	//step := 0.01
 
-	if mods == glfw.ModShift {
+	/*if mods == glfw.ModShift {
 		step = 0.1
-	}
+	}*/
 
 	if key == glfw.KeyDown {
-		d.laufschrift.SetPosition(0, -float32(step))
+		//d.laufschrift.SetPosition(0, -float32(step))
 	}
 
 	if key == glfw.KeyUp {
-		d.laufschrift.SetPosition(0, float32(step))
+		//d.laufschrift.SetPosition(0, float32(step))
 	}
 
 	if key == glfw.KeyLeft {
-		d.laufschrift.SetPosition(-float32(step), 0)
+		//d.laufschrift.SetPosition(-float32(step), 0)
 	}
 
 	if key == glfw.KeyRight {
-		d.laufschrift.SetPosition(float32(step), 0)
+		//d.laufschrift.SetPosition(float32(step), 0)
+	}
+
+	if key == glfw.KeyS && action == glfw.Press {
+		d.gui.ToggleVisible()
 	}
 
 }
