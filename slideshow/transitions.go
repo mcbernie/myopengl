@@ -9,7 +9,9 @@ import (
 )
 
 const fragementShaderTemplate = `
-#version 150
+#ifdef GL_ES
+    precision highp float;
+#endif
 
 in vec2 _uv;
 out vec4 fragColor;
@@ -62,7 +64,9 @@ const (
 
 const (
 	vert = `
-	#version 150
+	#ifdef GL_ES
+		precision highp float;
+	#endif
 	in vec2 position;
 	out vec2 _uv;
 

@@ -38,9 +38,9 @@ func main() {
 	//glfw.WindowHint(glfw.ContextVersionMajor, 3)
 	//glfw.WindowHint(glfw.ContextVersionMinor, 2)
 
-	//glfw.WindowHint(glfw.ClientAPI, glfw.OpenGLESAPI)
+	glfw.WindowHint(glfw.ClientAPI, glfw.OpenGLESAPI)
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.ContextVersionMinor, 0)
 	//glfw.WindowHint(glfw.DepthBits, 16)
 	//glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	//glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
