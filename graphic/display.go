@@ -151,12 +151,12 @@ func (d *Display) Render(time float64) {
 	helper.Clear(helper.GlColorBufferBit)
 	helper.RunFunctions()
 
-	if pause := d.gui.GetPause(); pause > 0 && pause < 50 {
+	/*if pause := d.gui.GetPause(); pause > 0 && pause < 50 {
 		d.slideshow.SetDelay(pause)
 	}
 	if duration := d.gui.GetDuration(); duration > 0 && duration < 50 {
 		d.slideshow.SetDuration(duration)
-	}
+	}*/
 
 	//Run object list
 	d.objectsList.Render(time)
