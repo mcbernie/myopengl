@@ -43,12 +43,12 @@ linux32: ## Builds binary for linux
 	-o $(BUILDDIR)/se-l32
 
 arm5: ## builds for raspberry arm
-	env GOOS=linux GOARCH=arm GOARM=5 \
+	env CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=5 \
 	go build $(LDFLAG) \
 	-o $(BUILDDIR)/se-arm5
 
 arm7: ## build for rpi 3
-	env GOOS=linux GOARCH=arm GOARM=7 \
+	env CC=arm-none-eabi-gcc CXX=arm-none-eabi-g++ CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 \
 	go build $(LDFLAG) \
 	-o $(BUILDDIR)/se-arm7
 

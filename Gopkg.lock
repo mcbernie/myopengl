@@ -3,61 +3,98 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:355fd61339c300d8ce36495d278855893220bac8283d65a04b94fe4db201952e"
   name = "github.com/go-gl/gl"
-  packages = ["v2.1/gl","v3.2-core/gl"]
+  packages = [
+    "v2.1/gl",
+    "v3.1/gles2",
+    "v3.2-core/gl",
+  ]
+  pruneopts = ""
   revision = "68e2537930806bfcee1b92a0e14b4e9b8bb3a3e3"
 
 [[projects]]
   branch = "master"
+  digest = "1:77d8376a7e3137b4ecdb7c82771da82d6321eee0f41fcc91ca59ed7132f115e7"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
+  pruneopts = ""
   revision = "46a8d530c3268b31eeb1310f30fe42be1cae98f2"
 
 [[projects]]
   branch = "master"
+  digest = "1:7a2f22fae83e7a46712e50e7a76de79a64e688f5d805f252271c9da67f175121"
   name = "github.com/go-gl/mathgl"
   packages = ["mgl32"]
+  pruneopts = ""
   revision = "5ab0e04e1f55a10f3a71b1fccc60ca2ee9a0bc02"
 
 [[projects]]
   branch = "master"
+  digest = "1:9a49d37349fcced33db0aeea2b2fc46da17038ded56fa5d2e940fdc3c38b8198"
   name = "github.com/golang-ui/nuklear"
   packages = ["nk"]
+  pruneopts = ""
   revision = "4cfd78fa959792703073c66edb2bd18064245ffa"
 
 [[projects]]
   branch = "master"
+  digest = "1:05f7dd1dc7530cd6b959f8b49660cd898f8dc9601b4e764ef9bdf211e6318774"
   name = "github.com/golang/freetype"
-  packages = [".","raster","truetype"]
+  packages = [
+    ".",
+    "raster",
+    "truetype",
+  ]
+  pruneopts = ""
   revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
 
 [[projects]]
-  name = "github.com/pkg/profile"
-  packages = ["."]
-  revision = "5b67d428864e92711fcbd2f8629456121a56d91f"
-  version = "v1.2.1"
-
-[[projects]]
+  digest = "1:4aa77644fa15ef170580070adcb70bd0adb02b0980bcc632eeaa528fd0e8137e"
   name = "github.com/veandco/go-sdl2"
   packages = ["sdl"]
+  pruneopts = ""
   revision = "271d2ec43388932fd2a80f4c2e81021734685a62"
   version = "v0.3"
 
 [[projects]]
   branch = "master"
+  digest = "1:0a5c558fb8114bfde77c99993727ca62587484d5dc26a13d47245fe6d20ff659"
   name = "github.com/xlab/android-go"
-  packages = ["android","egl","gles2","gles3"]
+  packages = [
+    "android",
+    "egl",
+    "gles2",
+    "gles3",
+  ]
+  pruneopts = ""
   revision = "ebf4d6dd1830d02eccda51fa12d4c7c57fc0e851"
 
 [[projects]]
   branch = "master"
+  digest = "1:f73141ead8ee13f385c2efa0fed39aba4621ce6a1ecdab41b340b20ba4653b95"
   name = "golang.org/x/image"
-  packages = ["font","math/f32","math/fixed"]
+  packages = [
+    "font",
+    "math/f32",
+    "math/fixed",
+  ]
+  pruneopts = ""
   revision = "af66defab954cb421ca110193eed9477c8541e2a"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "850af4db086a76cc5aa9be9bef0d8ec17067d6e071ddda8c652599278793a12a"
+  input-imports = [
+    "github.com/go-gl/gl/v3.1/gles2",
+    "github.com/go-gl/gl/v3.2-core/gl",
+    "github.com/go-gl/glfw/v3.2/glfw",
+    "github.com/go-gl/mathgl/mgl32",
+    "github.com/golang-ui/nuklear/nk",
+    "github.com/golang/freetype",
+    "github.com/golang/freetype/truetype",
+    "golang.org/x/image/font",
+    "golang.org/x/image/math/fixed",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
