@@ -3,7 +3,7 @@ package graphic
 import (
 	"log"
 
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/go-gl/glfw/v3.1/glfw"
 	"github.com/mcbernie/myopengl/graphic/gui"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"

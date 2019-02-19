@@ -101,7 +101,7 @@ func (tex *Texture) ReplaceImage(img image.Image) error {
 	helper.TexParameteri(tex.target, helper.GlTextureMinFilter, helper.GlLinear)
 	helper.TexParameteri(tex.target, helper.GlTextureMagFilter, helper.GlLinear)
 	helper.TexParameteri(tex.target, helper.GlTextureMinFilter, helper.GlLinearMipmapLinear)
-	helper.TexParameteri(tex.target, helper.GlTextureLodBias, 0)
+	//helper.TexParameteri(tex.target, helper.GlTextureLodBias, 0)
 	tex.UnBind()
 	//log.Println(helper.ErrorCheck())
 	return nil

@@ -21,9 +21,9 @@ const (
 	GlTextureMinFilter   = gl.TEXTURE_MIN_FILTER
 	GlTextureMagFilter   = gl.TEXTURE_MAG_FILTER
 	GlLinearMipmapLinear = gl.LINEAR_MIPMAP_LINEAR
-	GlTextureLodBias     = gl.TEXTURE_LOD_BIAS
-	GlLinear             = gl.LINEAR
-	GlNearest            = gl.NEAREST
+	//GlTextureLodBias     = gl.TEXTURE_LOD_BIAS
+	GlLinear  = gl.LINEAR
+	GlNearest = gl.NEAREST
 
 	//GlTexture0 all Textures..
 	GlTexture0 = gl.TEXTURE0
@@ -36,7 +36,7 @@ const (
 	GlTexture7 = gl.TEXTURE7
 
 	GlTexture2D = gl.TEXTURE_2D
-	GlSrgbAlpha = gl.SRGB_ALPHA
+	GlSrgbAlpha = gl.RGBA
 	GlRgbA      = gl.RGBA
 
 	GlUnsignedByte = gl.UNSIGNED_BYTE
