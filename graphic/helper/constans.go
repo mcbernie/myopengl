@@ -1,9 +1,9 @@
 package helper
 
 import (
-	//"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/gl/v2.1/gl"
 	//"github.com/go-gl/gl/v3.2-core/gl"
-	gl "github.com/go-gl/gl/v3.1/gles2"
+	//gl "github.com/go-gl/gl/v3.1/gles2"
 )
 
 const (
