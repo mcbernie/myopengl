@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/go-gl/glfw/v3.1/glfw"
-	"github.com/mcbernie/myopengl/graphic/gui"
+	//"github.com/mcbernie/myopengl/graphic/gui"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
 	"github.com/mcbernie/myopengl/slideshow"
@@ -27,7 +27,7 @@ type Display struct {
 	// GFX Systems
 	slideshow   *slideshow.Slideshow
 	laufschrift *objects.LaufschriftObject
-	gui         *gui.GuiSystem
+	//gui         *gui.GuiSystem
 }
 
 var tex *objects.Texture
@@ -66,9 +66,9 @@ func InitDisplay(window *glfw.Window, defaultDelay, defaultDuration float64) *Di
 	-0.8, -0.8, 1.6, 0.2)*/
 	//d.objectsList.AddRenderer(d.laufschrift)
 
-	d.gui = gui.CreateGui(d.window)
-	d.gui.SetDuration(d.slideshow.GetDuration())
-	d.objectsList.AddRenderer(d.gui)
+	//d.gui = gui.CreateGui(d.window)
+	//d.gui.SetDuration(d.slideshow.GetDuration())
+	//d.objectsList.AddRenderer(d.gui)
 
 	return d
 }
@@ -98,7 +98,7 @@ func (d *Display) SetKeyCallback(key glfw.Key, scancode int, action glfw.Action,
 	}
 
 	if key == glfw.KeyS && action == glfw.Press {
-		d.gui.ToggleVisible()
+		//d.gui.ToggleVisible()
 	}
 
 }
