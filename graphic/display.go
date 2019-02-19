@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/mcbernie/myopengl/graphic/fonts"
 	"github.com/mcbernie/myopengl/graphic/gui"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
@@ -20,19 +19,15 @@ type Display struct {
 
 	window *glfw.Window
 
-	defaultShader *objects.Program
-	slideshow     *slideshow.Slideshow
-
+	// Memory, Object and Render Managment
 	renderer    *objects.Renderer
 	Loader      *objects.Loader
-	rawModel    *objects.RawModel
-	entity      *objects.Entity
-	fpsText     *fonts.GUIText
-	font        *fonts.FontType
-	laufschrift *objects.LaufschriftObject
 	objectsList objects.ObjectsList
 
-	gui *gui.GuiSystem
+	// GFX Systems
+	slideshow   *slideshow.Slideshow
+	laufschrift *objects.LaufschriftObject
+	gui         *gui.GuiSystem
 }
 
 var tex *objects.Texture
@@ -58,25 +53,13 @@ func InitDisplay(window *glfw.Window, defaultDelay, defaultDuration float64) *Di
 	log.Print("init loader, renderer and createObjectList...")
 	d.Loader = objects.MakeLoader()
 	d.renderer = objects.MakeRenderer()
-
 	d.objectsList = objects.CreateObjectList(d.renderer)
 
-	log.Print("init fonts")
-	fonts.InitTextMaster(d.Loader)
-	d.font = fonts.MakeFontType(d.Loader.LoadTexture("assets/fonts/verdana.png"), "assets/fonts/verdana.fnt")
-
 	log.Print("init slideshow")
-	// SlideShowSpecific
 	d.slideshow = slideshow.MakeSlideshow(defaultDelay, defaultDuration, d.Loader)
 	d.slideshow.LoadTransitions("./assets/transitions", d.renderer.GetProjection())
 	elapsed = 0.0
 	d.objectsList.AddRenderer(d.slideshow)
-
-	/*go func() {
-		time.Sleep(5 * time.Second)
-		log.Println("Test laufschirft replacing")
-		d.laufschrift.SetTextSafe("Hallo Mallo")
-	}()*/
 
 	/*d.laufschrift = objects.CreateLaufschrift(
 	"Ganz kurzer Text!8n ug ztg ztgvi gviv izvizviztvizviztgfiufiztfz",
@@ -154,22 +137,10 @@ func (d *Display) Render(time float64) {
 	frameCount++
 	if delta >= 1 {
 		fps := float64(frameCount) / delta
-
-		/*d.fpsText.Remove()
-		d.fpsText = fonts.CreateGuiText(fmt.Sprintf("FPS:%.3f", fps), 0.7, d.font, [2]float32{-1.0, 1.0}, 4, false)
-		d.fpsText.SetColourRGB(246, 122, 140)*/
-
-		/*d.entity.SetColourRGB(255, 0, 10, 80)*/
-		//d.laufschrift.SetColor(0, 0, 0)
 		if fps < 60 {
-			//d.fpsText.SetColour(0.8, 0.8, 0.8)
-			//d.laufschrift.SetColor(200, 200, 200)
 			if fps < 30 {
-				//d.laufschrift.SetColor(200, 130, 130)
-				//d.fpsText.SetColour(0.8, 0.5, 0.5)
 			}
 		}
-
 		frameCount = 0
 		lastTime = time
 	}
@@ -190,12 +161,10 @@ func (d *Display) Render(time float64) {
 	//Run object list
 	d.objectsList.Render(time)
 
-	//d.laufschrift.Render(d.renderer, time)
 }
 
 //Delete unload all data from gpu
 func (d *Display) Delete() {
 	d.Loader.CleanUP()
-	d.slideshow.CleanUP()
-	d.gui.Delete()
+	d.objectsList.Delete()
 }

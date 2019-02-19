@@ -3,11 +3,25 @@
 
 [[projects]]
   branch = "master"
+<<<<<<< HEAD
+=======
+  digest = "1:07c2cd41457abf75bb6dbbc7f6070ec99550198d3471e2f02a362d79623a89a5"
+  name = "github.com/3d0c/gmf"
+  packages = ["."]
+  pruneopts = ""
+  revision = "ec1401b491850f6cce7615f222072d0d473f1c80"
+
+[[projects]]
+  branch = "master"
+>>>>>>> 45d9f3b586a7f3fc3896388a9a78dc45456d59b1
   digest = "1:355fd61339c300d8ce36495d278855893220bac8283d65a04b94fe4db201952e"
   name = "github.com/go-gl/gl"
   packages = [
     "v2.1/gl",
+<<<<<<< HEAD
     "v3.1/gles2",
+=======
+>>>>>>> 45d9f3b586a7f3fc3896388a9a78dc45456d59b1
     "v3.2-core/gl",
   ]
   pruneopts = ""
@@ -86,7 +100,11 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+<<<<<<< HEAD
     "github.com/go-gl/gl/v3.1/gles2",
+=======
+    "github.com/3d0c/gmf",
+>>>>>>> 45d9f3b586a7f3fc3896388a9a78dc45456d59b1
     "github.com/go-gl/gl/v3.2-core/gl",
     "github.com/go-gl/glfw/v3.2/glfw",
     "github.com/go-gl/mathgl/mgl32",

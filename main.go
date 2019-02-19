@@ -19,7 +19,6 @@ const delay float64 = 5.0    //8.0
 const duration float64 = 1.5 // 2.0
 
 func init() {
-	// GLFW event handling must be run on the main OS thread
 	runtime.LockOSThread()
 }
 
@@ -51,11 +50,11 @@ func main() {
 		panic(err)
 	}
 
+	window.MakeContextCurrent()
+
 	if err := helper.Init(); err != nil {
 		panic("OpenGL 3.2 Core wird nicht unterstützt!")
 	}
-
-	window.MakeContextCurrent()
 
 	err = programLoop(window)
 	if err != nil {

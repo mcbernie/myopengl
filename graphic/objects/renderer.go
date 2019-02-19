@@ -13,6 +13,7 @@ import (
 
 type ObjectInterface interface {
 	Render(r *Renderer, time float64)
+	Delete()
 }
 
 type Object struct {
@@ -56,6 +57,12 @@ func (o *ObjectsList) AddRenderer(r ObjectInterface) {
 func (o *ObjectsList) Render(time float64) {
 	for _, r := range o.objects {
 		r.Render(o.renderer, time)
+	}
+}
+
+func (o *ObjectsList) Delete() {
+	for _, r := range o.objects {
+		r.Delete()
 	}
 }
 
@@ -128,7 +135,7 @@ func (r *Renderer) RenderEntity(e *Entity, shader *Program) {
 	helper.Uniform4f(shader.GetUniform("color"), e.color)
 	helper.UniformMatrix4(shader.GetUniform("transformationMatrix"), translationMatrix)
 
-	//gl.DrawElements(gl.TRIANGLES, e.Model.vertexCount, gl.UNSIGNED_INT, gl.PtrOffset(0))
+	// Draw Model from entity
 	e.Model.Draw()
 
 	helper.DisableVertexAttribArray(0)
