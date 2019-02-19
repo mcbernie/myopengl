@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/go-gl/glfw/v3.1/glfw"
+	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/mcbernie/myopengl/graphic"
 	"github.com/mcbernie/myopengl/graphic/helper"
 	"github.com/mcbernie/myopengl/graphic/objects"
@@ -33,7 +33,7 @@ func main() {
 	}
 	defer glfw.Terminate()
 
-	glfw.WindowHint(glfw.Resizable, glfw.True)
+	//glfw.WindowHint(glfw.Resizable, glfw.True)
 
 	//glfw.WindowHint(glfw.ContextVersionMajor, 3)
 	//glfw.WindowHint(glfw.ContextVersionMinor, 2)
@@ -41,7 +41,7 @@ func main() {
 	glfw.WindowHint(glfw.ClientAPI, glfw.OpenGLESAPI)
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
 	glfw.WindowHint(glfw.ContextVersionMinor, 0)
-
+	glfw.WindowHint(glfw.DepthBits, 16)
 	//glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	//glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
@@ -52,8 +52,10 @@ func main() {
 
 	window.MakeContextCurrent()
 
+	log.Println("Bin Hier...")
+
 	if err := helper.Init(); err != nil {
-		panic("OpenGL 3.2 Core wird nicht unterstützt!")
+		panic("OpenGLES 2.0 wird nicht unterstützt!")
 	}
 
 	err = programLoop(window)
